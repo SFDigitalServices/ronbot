@@ -172,7 +172,7 @@ app.post('/slack-events', (req, res) => {
             ]
           });
         }
-        else if(payload.event.text.includes("acronym")) {
+        else if(payload.event.text.includes('acronym') || payload.event.text.includes('what\s') || payload.event.text.includes('what is')) {
           let acronym = payload.event.text.substring(payload.event.text.toLowerCase().indexOf('acronym') + 'acronym'.length)
             .toLowerCase().trim();
           let found = false;
