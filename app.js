@@ -108,115 +108,127 @@ app.post('/slack-events', (req, res) => {
     let directMessageToBot = (payload.event.type === 'message' && payload.event.channel_type === 'im' && !payload.event.bot_id) ? true : false;
     if(payload.event.type === 'app_mention' || directMessageToBot) {
       if(payload.event.text) {
-        if(payload.event.text.includes('quote')) {
-          axios.get('http://ron-swanson-quotes.herokuapp.com/v2/quotes').then((response) => {
-            let quote = response.data[0];
-            postSlackMessage('https://slack.com/api/chat.postMessage', {
-              token: SLACKBOT_TOKEN,
-              channel: payload.event.channel,
-              text: '> ' + quote
-            });
-          })
-        }
-        else if(payload.event.text.includes("sfgov-content-sandbox")) {
-          if(!directMessageToBot) { // not a direct message, respond in thread and direct message user
-            postSlackMessage('https://slack.com/api/chat.postMessage', {
-              token: SLACKBOT_TOKEN,
-              channel: payload.event.channel,
-              thread_ts: payload.event.event_ts,
-              text: 'Let\'s chat.  I\'ll send you a direct message.'
-            })
-          }
-          postSlackMessage('https://slack.com/api/chat.postMessage', {
-            "token": SLACKBOT_TOKEN,
-            "channel": payload.event.user, // direct message user
-            "user": payload.event.user,
-            "as_user": true,
-            "attachments": [
-              {
-                "blocks": [
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "Hello <@" + payload.event.user +">.  You asked me to manually (re)create the <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> on pantheon.  This will wipe out the existing sandbox and create a new one by cloning everything in the current production environment.\n\nAre you sure you want to do this?"
-                    }
-                  },
-                  {
-                    "type": "actions",
-                    "elements": [
-                      {
-                        "type": "button",
-                        "text": {
-                          "type": "plain_text",
-                          "emoji": true,
-                          "text": "Yes"
-                        },
-                        "style": "primary",
-                        "value": "sfgov_content_sandbox_yes"
-                      },
-                      {
-                        "type": "button",
-                        "text": {
-                          "type": "plain_text",
-                          "emoji": true,
-                          "text": "No"
-                        },
-                        "style": "danger",
-                        "value": "sfgov_content_sandbox_no"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          });
-        }
-        else if(payload.event.text.includes('acronym') || payload.event.text.includes('what\'s') || payload.event.text.includes('what is')) {
-          let acronym = payload.event.text.substring(payload.event.text.toLowerCase().indexOf('acronym') + 'acronym'.length)
-            .toLowerCase().trim();
-          let found = false;
-          let threadTs = payload.event.thread_ts ? payload.event.thread_ts : null;
-          for(let key in acronyms) {
-            let regex = '\\s?' + key.toLowerCase() + '(\\s|\\W|$)';
-            let re = new RegExp(regex, 'g');
-            let matches = acronym.match(re);
-            if(matches) {
-              found = true;
-              let messageText = acronyms[key];
+        let userMessage = payload.event.text.trim().toLowerCase();
+        let commandString = userMessage.substring(userMessage.indexOf(' ')+1);
+        let command = commandString.indexOf(' ') >= 0 ? commandString.substring(0, commandString.indexOf(' ')) : commandString;
+        let args = commandString.substring(command.length+1).split(' ');
+        switch(command) {
+          case 'quote':
+            axios.get('http://ron-swanson-quotes.herokuapp.com/v2/quotes').then((response) => {
+              let quote = response.data[0];
               postSlackMessage('https://slack.com/api/chat.postMessage', {
                 token: SLACKBOT_TOKEN,
                 channel: payload.event.channel,
-                thread_ts: threadTs,
-                text: '*' + key + '* is probably an acronym for _' + messageText + '_'
+                text: '> ' + quote
               });
-              break;
+            });
+            break;
+          case 'sfgov-content-sandbox':
+            if(!directMessageToBot) { // not a direct message, respond in thread and direct message user
+              postSlackMessage('https://slack.com/api/chat.postMessage', {
+                token: SLACKBOT_TOKEN,
+                channel: payload.event.channel,
+                thread_ts: payload.event.event_ts,
+                text: 'Let\'s chat.  I\'ll send you a direct message.'
+              })
             }
-          }
-          if(!found) {
+            postSlackMessage('https://slack.com/api/chat.postMessage', {
+              "token": SLACKBOT_TOKEN,
+              "channel": payload.event.user, // direct message user
+              "user": payload.event.user,
+              "as_user": true,
+              "attachments": [
+                {
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "Hello <@" + payload.event.user +">.  You asked me to manually (re)create the <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> on pantheon.  This will wipe out the existing sandbox and create a new one by cloning everything in the current production environment.\n\nAre you sure you want to do this?"
+                      }
+                    },
+                    {
+                      "type": "actions",
+                      "elements": [
+                        {
+                          "type": "button",
+                          "text": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "Yes"
+                          },
+                          "style": "primary",
+                          "value": "sfgov_content_sandbox_yes"
+                        },
+                        {
+                          "type": "button",
+                          "text": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "No"
+                          },
+                          "style": "danger",
+                          "value": "sfgov_content_sandbox_no"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            });
+            break;
+          case 'acronym':
+          case 'whatis':
+          case "what’s":
+            let acronym = args[0];
+            let found = false;
+            let threadTs = payload.event.thread_ts ? payload.event.thread_ts : null;
+            for(let key in acronyms) {
+              let regex = '\\s?' + key.toLowerCase() + '(\\s|\\W|$)';
+              let re = new RegExp(regex, 'g');
+              let matches = acronym.match(re);
+              if(matches) {
+                found = true;
+                let messageText = acronyms[key];
+                postSlackMessage('https://slack.com/api/chat.postMessage', {
+                  token: SLACKBOT_TOKEN,
+                  channel: payload.event.channel,
+                  thread_ts: threadTs,
+                  text: '*' + key + '* is probably an acronym for _' + messageText + '_'
+                });
+                break;
+              }
+            }
+            if(!found) {
+              postSlackMessage('https://slack.com/api/chat.postMessage', {
+                token: SLACKBOT_TOKEN,
+                channel: payload.event.channel,
+                thread_ts: payload.event.ts,
+                text: "The acronym you requested was not found.  If you need to add it, please follow these instructions: https://github.com/SFDigitalServices/ronbot/tree/master/acronyms"
+              });
+            }
+            break;
+          case 'help':
             postSlackMessage('https://slack.com/api/chat.postMessage', {
               token: SLACKBOT_TOKEN,
               channel: payload.event.channel,
-              thread_ts: payload.event.ts,
-              text: "The acronym you requested was not found.  If you need to add it, please follow these instructions: https://github.com/SFDigitalServices/ronbot/tree/master/acronyms"
+              text: 'Help has arrived.\n' +
+                '>>>' + 
+                '`@ronbot sfgov-content-sandbox` - (re)create sf.gov content sandbox on pantheon based on production\n' +
+                '`@ronbot acronym/whatis/what’s abc` - if found, unfurls the acronym abc\n' + 
+                '`@ronbot quote` - be prepared to receive wisdom\n' + 
+                '`@ronbot help` - this menu\n'
             });
-          }
-        }
-        else if(payload.event.text.includes("help")) {
-          postSlackMessage('https://slack.com/api/chat.postMessage', {
-            token: SLACKBOT_TOKEN,
-            channel: payload.event.channel,
-            text: 'Help has arrived.\n' +
-              '>>>' + 
-              '`@ronbot sfgov-content-sandbox` - (re)create sf.gov content sandbox on pantheon based on production\n' +
-              '`@ronbot acronym/what is/what\'s abc` - if found, unfurls the acronym abc\n' + 
-              '`@ronbot quote` - be prepared to receive wisdom\n' + 
-              '`@ronbot help` - this menu\n'
-          });
+            break;
+          default:
+            postSlackMessage('https://slack.com/api/chat.postMessage', {
+              token: SLACKBOT_TOKEN,
+              channel: payload.event.channel,
+              text: 'I don\'t understand the command: `' + command + '`.  Try `@ronbot help`'
+            }); 
+            break;
         }
       }
-    } else { // all other messages
-
     }
   }
 });
