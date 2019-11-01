@@ -172,7 +172,7 @@ app.post('/slack-events', (req, res) => {
             ]
           });
         }
-        else if(payload.event.text.includes('acronym') || payload.event.text.includes('what\s') || payload.event.text.includes('what is')) {
+        else if(payload.event.text.includes('acronym') || payload.event.text.includes('what\'s') || payload.event.text.includes('what is')) {
           let acronym = payload.event.text.substring(payload.event.text.toLowerCase().indexOf('acronym') + 'acronym'.length)
             .toLowerCase().trim();
           let found = false;
@@ -208,8 +208,8 @@ app.post('/slack-events', (req, res) => {
             channel: payload.event.channel,
             text: 'Help has arrived.\n' +
               '>>>' + 
-              '`@ronbot sfgov-content-sandbox` - (re)create content sandbox on pantheon based on production\n' +
-              '`@ronbot acronym abc` - if found, unfurls the acronym abc\n' + 
+              '`@ronbot sfgov-content-sandbox` - (re)create sf.gov content sandbox on pantheon based on production\n' +
+              '`@ronbot acronym/what is/what\'s abc` - if found, unfurls the acronym abc\n' + 
               '`@ronbot quote` - be prepared to receive wisdom\n' + 
               '`@ronbot help` - this menu\n'
           });
