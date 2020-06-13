@@ -12,4 +12,4 @@ jobs:
       - checkout
       - heroku/install
       - heroku/deploy-via-git:
-          only-branch: master
+          only-branch: main
