@@ -48,7 +48,7 @@ Connections                   ttl     opn     rt1     rt5     p50     p90
                               2       0       0.02    0.01    2.78    5.01        
 ```
 
-**The port you use when starting ngrok will the same you assign to the PORT var when you create your .env file**
+**The port you use when starting ngrok will be the same you assign to the PORT var when you create your .env file**
 
 ## Clone this repo, install dependencies, create .env file start the app
 
@@ -77,9 +77,9 @@ Now when you go to a browser at the urls that ngrok gives you (https://9cd5682e.
 
 Go to https://api.slack.com/apps/AM11J7ULV/event-subscriptions and update the Event Subscriptions url to the ngrok url from the steps above (in this case: https://9cd5682e.ngrok.io/slack-events).  Do the same for Interactive Components request url: https://api.slack.com/apps/AM11J7ULV/interactive-messages
 
-Any interactions with ronbot should now be hitting your local environment.  
+Any interactions with ronbot should now be hitting your local environment.
 
-Be warned - if you forget to update the request url to the deployed app or shut off your computer, ronbot will be unresponsive to anyone trying to interact with him.
+When finished with development on your local machine, be sure to change the urls back to https://ronswanbot.herokuapp.com/slack-events.  Otherwise, if you shut off your computer, ronbot will be unresponsive to anyone trying to interact with him.
 
 ## Read lots of docs
 
