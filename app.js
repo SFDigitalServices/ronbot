@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const yaml = require('js-yaml');
 const fs = require('fs');
+const {google} = require('googleapis');
 
 const SLACKBOT_TOKEN = process.env.SLACKBOT_TOKEN;
 const CIRCLECI_API_TOKEN = process.env.CIRCLECI_API_TOKEN;
@@ -18,6 +19,24 @@ try {
 } catch(e) {
   console.log(e);
 }
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+});
+
+const test = () => {
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c',
+    range: 'Team'
+  }, (err, res) => {
+    if(err) return console.log('The API returned an error: ' + err);
+    console.log(res.data.values);
+  });
+}
+
+test();
 
 const postSlackMessage = function(url, postBody, successCallback, errorCallback) {
   axios.post(url, postBody, {
