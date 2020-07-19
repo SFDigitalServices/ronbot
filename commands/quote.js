@@ -7,6 +7,8 @@ const getQuote =  (payload) => {
     let quote = response.data[0];
     slackServices.postMessage({
       channel: payload.event.channel,
+      thread_ts: payload.event.ts,
+      reply_broadcast: true,
       text: '> ' + quote
     });
   });
