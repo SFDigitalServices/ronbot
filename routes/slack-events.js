@@ -13,12 +13,6 @@ const { getAcronym, refreshAcronyms } = require('../commands/acronym');
 const { sfgovContentSandbox } = require('../commands/sfgov-content-sandbox');
 const { refresh } = require('../commands/refresh');
 
-try {
-  acronyms = yaml.safeLoad(fs.readFileSync('./acronyms/acronyms.yml', 'utf-8'));
-} catch(e) {
-  console.log(e);
-}
-
 router.post('/', (req, res, next) => {
   if(req.body.challenge) {
     res.send(req.body.challenge); // use this for verifying request url for slack event subscriptions
