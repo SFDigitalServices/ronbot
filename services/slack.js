@@ -1,10 +1,11 @@
-const config = require('../config.js');
 const axios = require('axios');
+
+const config = require('../config.js');
 const SLACKBOT_TOKEN = config.SLACKBOT_TOKEN;
 
-const postMessage = function(url, postBody, successCallback, errorCallback) {
+const postMessage = function(postBody, successCallback, errorCallback) {
   postBody.token = SLACKBOT_TOKEN;
-  axios.post(url, postBody, {
+  axios.post('https://slack.com/api/chat.postMessage', postBody, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + SLACKBOT_TOKEN
@@ -21,5 +22,5 @@ const postMessage = function(url, postBody, successCallback, errorCallback) {
 }
 
 module.exports = {
-  postMessage: postMessage
+  postMessage
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const config = require('../config.js');
-const slackServices = require('../services/slack-services');
+const slackServices = require('../services/slack');
 
 const CIRCLECI_API_TOKEN = config.CIRCLECI_API_TOKEN;
 
@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
                   let statusEmoji = status === 'failed' ? ':red_circle:' : ':white_check_mark:';
                   setTimeout(() => {
                     clearInterval(checkStatus);
-                    slackServices.postMessage('https://slack.com/api/chat.postMessage', {
+                    slackServices.postMessage({
                       token: SLACKBOT_TOKEN,
                       channel: statusChannel,
                       text: '<@' + userId + '> <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> build finished with status: ' + statusEmoji + ' `' + status + '`'
@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
               });
             }, 150000); // check every 2.5 minutes
       }).catch((err) => {
-        slackServices.postMessage('https://slack.com/api/chat.postMessage', {
+        slackServices.postMessage({
           channel: statusChannel,
           text: '<@' + userId + '> Something went wrong.  Tell someone about this:' + "\n" + '`' + err + '`' 
         })
