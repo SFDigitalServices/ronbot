@@ -1,32 +1,33 @@
 const slackServices = require('../services/slack');
 const {refreshAcronyms} = require('./acronym');
+const {refreshNotetakers} = require('./schedule/notetakers');
+const slack = require('../services/slack');
 
-const refresh = (payload, source) => {
-  switch(source) {
-    case 'acronyms':
-      slackServices.postMessage({
-        channel: payload.event.channel,
-        thread_ts: payload.event.ts,
-        text: 'refreshing...'
-      }, () => {
+const refreshableThings = ['acronyms', 'notetakers'];
+const refresh = (payload, what) => {
+  if(what) {
+    switch(what) {
+      case 'acronyms':
         refreshAcronyms().then((result) => {
           if(result) {
             if(result.status) {
-              slackServices.postMessage({
-                channel: payload.event.channel,
-                thread_ts: payload.event.ts,
-                text: 'refresh complete.  diff: ' + result.diff
-              });
+              slackServices.postMessage(payload, '`refresh complete.  diff: ' + result.diff + '`');
             }
           }
         }).catch((err) => {
           console.log(err);
         });
-      });
-      break;
-    default:
-      break;
+        break;
+      case 'notetakers':
+        refreshNotetakers(payload);
+        break;
+      default:
+        break;
+    }
+  } else {
+    slackServices.postMessage(payload, 'Refresh what? Try `' + refreshableThings.toString() + '`');
   }
+
 }
 
 module.exports = { refresh };

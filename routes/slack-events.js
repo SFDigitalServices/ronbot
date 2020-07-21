@@ -9,8 +9,9 @@ const slackServices = require('../services/slack');
 // commands
 const { getQuote } = require('../commands/quote');
 const { getHelp } = require('../commands/help');
-const { getAcronym, refreshAcronyms } = require('../commands/acronym');
+const { getAcronym } = require('../commands/acronym');
 const { sfgovContentSandbox } = require('../commands/sfgov-content-sandbox');
+const { schedule } = require('../commands/schedule');
 const { refresh } = require('../commands/refresh');
 
 router.post('/', (req, res, next) => {
@@ -26,7 +27,6 @@ router.post('/', (req, res, next) => {
         let commandString = userMessage.trim().split(' ').filter(item => item.length > 0);
         let command = directMessageToBot ? commandString[0] : commandString[1];
         let args = directMessageToBot ? commandString.filter((item, index) => index > 0) : commandString.filter((item, index) => index > 1);
-        
         switch(command) {
           case 'quote':
             getQuote(payload);
@@ -39,6 +39,9 @@ router.post('/', (req, res, next) => {
           case "what’s":
             getAcronym(payload, args[0]);
             break;
+          case 'schedule':
+            schedule(payload, args[0]);
+            break;
           case 'refresh':
             refresh(payload, args[0]);
             break;
@@ -46,11 +49,7 @@ router.post('/', (req, res, next) => {
             getHelp(payload);
             break;
           default:
-            slackServices.postMessage({
-              channel: payload.event.channel,
-              thread_ts: payload.event.ts,
-              text: '`' + command + '` ? Try `@ronbot help`'
-            }); 
+            slackServices.postMessage(payload, '`' + command + '` ? Try `@ronbot help`');
             break;
         }
       }

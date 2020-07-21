@@ -21,6 +21,4 @@ const getSheet = async (sheetId, range) => {
   }
 }
 
-module.exports = {
-  getSheet
-}
+module.exports = { getSheet }
