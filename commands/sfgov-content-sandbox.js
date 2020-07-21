@@ -2,13 +2,9 @@ const slackServices = require('../services/slack');
 
 const sfgovContentSandbox = (payload, directMessageToBot) => {
   if(!directMessageToBot) { // not a direct message, respond in thread and direct message user
-    slackServices.postMessage({
-      channel: payload.event.channel,
-      thread_ts: payload.event.event_ts,
-      text: 'Let\'s chat.  I\'ll send you a direct message.'
-    })
+    slackServices.postMessage(payload, 'Let\'s chat.  I\'ll send you a direct message.');
   }
-  slackServices.postMessage({
+  slackServices.postMessageAdvanced({
     "channel": payload.event.user, // direct message user
     "user": payload.event.user,
     "as_user": true,

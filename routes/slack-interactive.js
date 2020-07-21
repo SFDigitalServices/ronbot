@@ -35,8 +35,7 @@ router.post('/', (req, res) => {
                   let statusEmoji = status === 'failed' ? ':red_circle:' : ':white_check_mark:';
                   setTimeout(() => {
                     clearInterval(checkStatus);
-                    slackServices.postMessage({
-                      token: SLACKBOT_TOKEN,
+                    slackServices.postMessageAdvanced({
                       channel: statusChannel,
                       text: '<@' + userId + '> <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> build finished with status: ' + statusEmoji + ' `' + status + '`'
                     });
@@ -45,7 +44,7 @@ router.post('/', (req, res) => {
               });
             }, 150000); // check every 2.5 minutes
       }).catch((err) => {
-        slackServices.postMessage({
+        slackServices.postMessageAdvanced({
           channel: statusChannel,
           text: '<@' + userId + '> Something went wrong.  Tell someone about this:' + "\n" + '`' + err + '`' 
         })
