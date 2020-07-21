@@ -18,7 +18,7 @@ const scheduleNotetakers = async (payload) => {
   if(!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir);
   }
-  fs.writeFile(tmpDir + '/notetakers-' + config.NOTETAKERS_SHEET.id, JSON.stringify(scheduledNotetakerMessages), (err) => {});
+  fs.writeFile(tmpDir + '/notetakers-' + config.NOTETAKERS_SHEET.id, JSON.stringify(scheduledNotetakerMessages), (err) => { console.log('error writing file'); console.log(err) });
   try {
     let outputMessage = '```';
     outputMessage += success + ' = success, ' + fail + ' = fail' + "\n";
