@@ -1,4 +1,4 @@
-const config = require('../config.js');
+const moment = require('moment');
 const slackServices = require('./slack');
 const googleSheets = require('./google-sheets');
 
@@ -12,7 +12,7 @@ const loadItems = async (sheetId, range) => {
 };
 
 const scheduleItems = async (sheetId, range) => {
-
+  const isUTC = true; //moment().utcOffset === 0;
   let items = await loadItems(sheetId, range);
   let scheduledMessages = [];
   try {
@@ -25,8 +25,23 @@ const scheduleItems = async (sheetId, range) => {
         let slackHandle = item[4];
         let slackChannel = item[5];
         let message = item[6];
-        let datetime = new Date(date + ' ' + time);
-        let scheduledTime = (Math.round(datetime.getTime() / 1000));
+        let datetime = moment(new Date(date + ' ' + time).toISOString());
+        let datetimeCached = moment(new Date(date + ' ' + time).toISOString());
+        console.log(datetime.format('MM/DD/YYYY, h:mm:ss a'));
+        let scheduledTime = datetime.unix();
+        
+        // if we are on utc time (which the server is), calculate the difference from the scheduled time relative to utc
+        let utcOffset = datetime.utcOffset();
+        if(isUTC) {
+          if(utcOffset !== 0) {
+            if(utcOffset < 0) { // current scheduled time is behind utc
+              scheduledTime = (datetime.subtract(utcOffset, 'minutes')).unix();
+            } else {
+              scheduledTime = (datetime.add(utcOffset, 'minutes')).unix();
+            }
+          }
+        }
+
         if(!isNaN(scheduledTime)) {
           let slackUser = await slackServices.getUserByName(slackHandle);
           try {

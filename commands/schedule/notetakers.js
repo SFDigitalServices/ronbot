@@ -6,6 +6,7 @@ const path = require('path');
 
 const appRoot = process.cwd();
 const tmpDir = path.join(appRoot + '/tmp');
+const tmpFile = '/notetakers-' + config.NOTETAKERS_SHEET.id;
 
 let scheduledNotetakerMessages = [];
 let success = '[+]';
@@ -14,11 +15,23 @@ let fail = '[!]';
 const scheduleNotetakers = async (payload) => {
   // scheduled messages will also contain messages that could not be scheduled
   scheduledNotetakerMessages = await scheduleService.scheduleItems(config.NOTETAKERS_SHEET.id, config.NOTETAKERS_SHEET.range);
+  let scheduledMessagesString = JSON.stringify(scheduledNotetakerMessages);
   // dump out to file for why not
   if(!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir);
   }
-  fs.writeFile(tmpDir + '/notetakers-' + config.NOTETAKERS_SHEET.id, JSON.stringify(scheduledNotetakerMessages), (err) => { console.log('error writing file'); console.log(err) });
+  fs.writeFile(tmpDir + tmpFile, scheduledMessagesString ? scheduledMessagesString : '[]', (err) => { 
+    if(err) throw err;
+    console.log('tmp file written: ' + tmpDir + '/' + tmpFile);
+  });
+
+  // also send ant a copy
+  slackServices.postMessageAdvanced({
+    "channel": "U6RS0HESK",
+    "user": "U6RS0HESK",
+    "text": 'attempted notetaker scheduling\n' + '```' + scheduledMessagesString + '```'
+  });
+
   try {
     let outputMessage = '```';
     outputMessage += success + ' = success, ' + fail + ' = fail' + "\n";
