@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const slackServices = require('./slack');
 const googleSheets = require('./google-sheets');
 
@@ -12,54 +12,52 @@ const loadItems = async (sheetId, range) => {
 };
 
 const scheduleItems = async (sheetId, range) => {
-  const isUTC = true; //moment().utcOffset === 0;
   let items = await loadItems(sheetId, range);
+  let itemsJson = [];
   let scheduledMessages = [];
-  try {
-    for(let i=0; i<items.length; i++) {
-      let item = items[i];
-      if(i > 0) { // assumes first row is header row
-        // also assumes this structure for schedule sheet
-        let date = item[0];
-        let time = item[1];
-        let slackHandle = item[4];
-        let slackChannel = item[5];
-        let message = item[6];
-        let datetime = moment(new Date(date + ' ' + time).toISOString());
-        let datetimeCached = moment(new Date(date + ' ' + time).toISOString());
-        console.log(datetime.format('MM/DD/YYYY, h:mm:ss a'));
-        let scheduledTime = datetime.unix();
-        
-        // if we are on utc time (which the server is), calculate the difference from the scheduled time relative to utc
-        let utcOffset = datetime.utcOffset();
-        if(isUTC) {
-          if(utcOffset !== 0) {
-            if(utcOffset < 0) { // current scheduled time is behind utc
-              scheduledTime = (datetime.subtract(utcOffset, 'minutes')).unix();
-            } else {
-              scheduledTime = (datetime.add(utcOffset, 'minutes')).unix();
-            }
-          }
-        }
+  let headerRow = [];
 
-        if(!isNaN(scheduledTime)) {
-          let slackUser = await slackServices.getUserByName(slackHandle);
+  // in the event that columns get shifted around
+  for(let i=0; i<items.length; i++) {
+    let message = {};
+    if(i==0) {
+      headerRow = items[i];
+    } else {
+      for(let j=0; j<headerRow.length; j++) {
+        message[headerRow[j]] = items[i][j];
+      }
+      itemsJson.push(message);
+    }
+  }
+  
+  try {
+    for(let i=0; i<itemsJson.length; i++) {
+      let item = itemsJson[i];
+      let date = item.Date;
+      let time = item.Time;
+      let slackHandle = item.Handle;
+      let slackChannel = item.Channel;
+      let message = item.Message;
+      let momentTzDate = moment(new Date(date + ' ' + time).toISOString()).tz("America/Los_Angeles", true); // keep time, but set timezone
+      let scheduledTime = momentTzDate.unix(); // slack wants a unix timestamp
+
+      if(!isNaN(scheduledTime)) {
+        let slackUser = await slackServices.getUserByName(slackHandle);
+        try {
+          let scheduleMessageResponse = await slackServices.scheduleMessage({
+            channel: slackChannel,
+            post_at: scheduledTime,
+            text: '<@' + slackUser.id + '> ' + message
+          });
           try {
-            let scheduleMessageResponse = await slackServices.scheduleMessage({
-              channel: slackChannel,
-              post_at: scheduledTime,
-              text: '<@' + slackUser.id + '> ' + message
-            });
-            try {
-              scheduleMessageResponse.recipient = slackHandle;
-              scheduleMessageResponse.datetime = date + ' at ' + time;
-              scheduledMessages.push(scheduleMessageResponse);
-            } catch(err) {
-              console.log(err);
-            }
-          } catch(e) {
-            console.log(e);
+            scheduleMessageResponse.recipient = slackHandle;
+            scheduleMessageResponse.datetime = date + ' at ' + time;
+            scheduledMessages.push(scheduleMessageResponse);
+          } catch(err) {
+            console.log(err);
           }
+        } catch(e) {
+          console.log(e);
         }
       }
     }
