@@ -16,7 +16,8 @@ const scheduleNotetakers = async (payload) => {
   // scheduled messages will also contain messages that could not be scheduled
   scheduledNotetakerMessages = await scheduleService.scheduleItems(config.NOTETAKERS_SHEET.id, config.NOTETAKERS_SHEET.range);
   let scheduledMessagesString = JSON.stringify(scheduledNotetakerMessages);
-  // dump out to file for why not
+
+  // dump out to file to keep record of scheduled messages that may need to be deleted later
   if(!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir);
   }
@@ -25,12 +26,14 @@ const scheduleNotetakers = async (payload) => {
     console.log('tmp file written: ' + tmpDir + '/' + tmpFile);
   });
 
-  // also send ant a copy
-  slackServices.postMessageAdvanced({
-    "channel": "U6RS0HESK",
-    "user": "U6RS0HESK",
-    "text": 'attempted notetaker scheduling\n' + '```' + scheduledMessagesString + '```'
-  });
+  // also send ant a copy (to delete scheduled messages if app crashes)
+  slackServices.getUserInfo(payload.event.user).then((response) => {
+    slackServices.postMessageAdvanced({
+      "channel": "U6RS0HESK",
+      "user": "U6RS0HESK",
+      "text": '`attempted notetaker scheduling by ' + response.real_name + ' (' + response.profile.display_name + ')`' + '\n' + '```' + scheduledMessagesString + '```'
+    });
+  })
 
   try {
     let outputMessage = '```';

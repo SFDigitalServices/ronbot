@@ -67,12 +67,23 @@ const deleteScheduledMessage  = async (postBody, successCallback, errorCallback)
 }
 
 const getUsers = async (theUsers) => {
-  let response = await axios.post('https://slack.com/api/users.list', { token: SLACKBOT_TOKEN } ,{ headers });
+  let response = await axios.post('https://slack.com/api/users.list', { token: SLACKBOT_TOKEN } , { headers });
   try {
     if(response.data.ok) {
-      theUsers.list = response.data.members;
-      console.log('got users');
+      let memberList = response.data.members;
+      for(let i=0; i<memberList.length; i++) {
+        theUsers.list[memberList[i].id] = memberList[i];
+      }
     }
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+const getUserInfo = async (userId) => {
+  if(Object.keys(users.list).length == 0) await getUsers(users);
+  try {
+    return users.list[userId];
   } catch(err) {
     console.log(err);
   }
@@ -81,10 +92,9 @@ const getUsers = async (theUsers) => {
 const getUserByName = async (username) => {
   if(Object.keys(users.list).length == 0) await getUsers(users);
   try {
-    for(let i = 0; i < users.list.length; i++) {
-      let item = users.list[i];
-      if(item.profile.display_name === username) {
-        return item;
+    for(let key in users.list) {
+      if(users.list[key].profile.display_name === username) {
+        return users.list[key];
       }
     }
   } catch(e) {
@@ -101,5 +111,6 @@ module.exports = {
   scheduleMessage, 
   deleteScheduledMessage,
   getUserByName,
+  getUserInfo,
   getUsers: async () => { await getUsers(users) }
 }
