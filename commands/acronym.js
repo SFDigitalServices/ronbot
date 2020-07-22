@@ -49,7 +49,7 @@ const getAcronym = (payload, acronym) => {
     }
   
     if(!found) {
-      let text = "The acronym you requested (*" + acronym + "*) was not found.  Add it here: https://docs.google.com/spreadsheets/d/13fcfWufGFEIVvca-1hP7mchVg9q6n7LOvdxYDBTdQiw and then issue the `refresh` command";
+      let text = "The acronym you requested (*" + acronym + "*) was not found.  Add it to the <https://docs.google.com/spreadsheets/d/13fcfWufGFEIVvca-1hP7mchVg9q6n7LOvdxYDBTdQiw|acronyms sheet> and then issue the `refresh` command";
       slackServices.postMessage(payload, text);
     } 
   } else {
