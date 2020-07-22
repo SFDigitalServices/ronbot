@@ -1,12 +1,12 @@
 const slackServices = require('../services/slack');
-const {scheduleNotetakers} = require('./schedule/notetakers');
+const {refreshNotetakers} = require('./schedule/notetakers');
 
 const scheduleableThings = ['notetakers'];
 const schedule = (payload, what) => {
   if(what) {
     switch(what) {
       case 'notetakers':
-        scheduleNotetakers(payload);
+        refreshNotetakers(payload); // because refresh deletes and schedules
         break;
       default:
         break;
