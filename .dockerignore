@@ -1,0 +1,8 @@
+node_modules
+.DS_Store
+.env
+google-credentials-heroku.json
+tmp/*
+!tmp/README.md
+Dockerfile
+.dockerignore
