@@ -1,0 +1,24 @@
+version: '3'
+services:
+  app:
+    build: 
+      context: .
+      args:
+        - GOOGLE_CONFIG=${GOOGLE_CONFIG}
+        - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+    depends_on: 
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - "4390:4390"
+    volumes:
+      - .:/home/node/app
+  postgres:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db

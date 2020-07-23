@@ -9,14 +9,16 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "googleapis": "^52.1.0",
-    "js-yaml": "^3.13.1",
     "moment-timezone": "^0.5.31"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "preinstall": "node preinstall.js"
+    "preinstall": "node preinstall.js",
+    "start.dev": "echo \"start.dev\" && nodemon -L"
   },
   "author": "",
   "license": "ISC"

@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const yaml = require('js-yaml')
-const fs = require('fs');
-
 const slackServices = require('../services/slack');
 
 // commands
