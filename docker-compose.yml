@@ -16,9 +16,11 @@ services:
       - .:/home/node/app
   postgres:
     image: postgres:12
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

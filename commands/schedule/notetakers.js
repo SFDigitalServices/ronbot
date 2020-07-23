@@ -1,8 +1,8 @@
+const fs = require('fs');
+const path = require('path');
 const config = require('../../config.js');
 const slackServices = require('../../services/slack');
 const scheduleService = require('../../services/schedule-service.js');
-const fs = require('fs');
-const path = require('path');
 
 const appRoot = process.cwd();
 const tmpDir = path.join(appRoot + '/tmp');
