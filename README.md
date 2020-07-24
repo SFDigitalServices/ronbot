@@ -1,9 +1,10 @@
 ronbot
 - is a slackbot that does things
 - is a node/express app
-- is deployed on heroku
+- uses circleci to deploy to heroku
 - uses a postgres db with one table
 - uses docker for local development
+- should probably have some tests
 
 `@ronbot [command]`
 
@@ -133,6 +134,11 @@ Heroku docs: https://devcenter.heroku.com/
 ## Misc notes
 
 - the app uses `nodemon` so the docker container doesn't have to be shut down and restart every time there is a code change
+
+- if you want to `heroku pg:psql` to run some queries against the postgres db on heroku, you'll also need to have a local installation of postgres or you'll get the `The local psql command could not be located.` error.  There are a bunch of ways to do this.  Here's one:
+  - [Download Postgres.app](https://postgresapp.com/downloads.html)
+  - put this in `~/.bash_profile`
+    - `export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"`
 
 ```bash
 docker exec -it container_name bash # execute an interactive bash shell in container_name
