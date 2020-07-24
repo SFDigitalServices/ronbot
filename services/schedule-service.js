@@ -1,6 +1,7 @@
 const moment = require('moment-timezone');
 const slackServices = require('./slack');
 const googleSheets = require('./google-sheets');
+const db = require('./db.js');
 
 const loadItems = async (sheetId, range) => {
   try {
@@ -51,7 +52,7 @@ const scheduleItems = async (sheetId, range) => {
           });
           try {
             scheduleMessageResponse.recipient = slackHandle;
-            scheduleMessageResponse.datetime = date + ' at ' + time;
+            scheduleMessageResponse.datetime = date + ' ' + time;
             scheduledMessages.push(scheduleMessageResponse);
           } catch(err) {
             console.log(err);
@@ -61,6 +62,9 @@ const scheduleItems = async (sheetId, range) => {
         }
       }
     }
+    // insert the scheduled messages list into the db, update if it already exists
+    db.query("INSERT INTO scheduled_items (sheet_id, messages_json) VALUES ($1, $2)" + 
+      "ON CONFLICT (sheet_id) DO UPDATE SET messages_json = $2", [sheetId, JSON.stringify(scheduledMessages)]);
     return scheduledMessages;
   } catch(e) {
     console.log('could not schedule items');
@@ -68,20 +72,26 @@ const scheduleItems = async (sheetId, range) => {
   }
 };
 
-const deleteScheduledMessages = async (scheduledMessages) => {
-  let promises = [];
-  for(let i=0; i<scheduledMessages.length; i++) {
-    let message = scheduledMessages[i];
-    if(message.ok) {
-      promises.push(slackServices.deleteScheduledMessage({
-        scheduled_message_id: message.scheduled_message_id,
-        channel: message.channel
-      }));
-    }
-  };
-  let result = await Promise.all(promises);
+const deleteScheduledMessages = async (sheetId) => {
+  const result = await db.query("SELECT messages_json FROM scheduled_items WHERE sheet_id=$1", [sheetId]);
   try {
-    return result;
+    const scheduledMessages = result.rows.length > 0 ? result.rows[0].messages_json : [];
+    let promises = [];
+    for(let i=0; i<scheduledMessages.length; i++) {
+      let message = scheduledMessages[i];
+      if(message.ok) {
+        promises.push(slackServices.deleteScheduledMessage({
+          scheduled_message_id: message.scheduled_message_id,
+          channel: message.channel
+        }));
+      }
+    };
+    let promiseResult = await Promise.all(promises);
+    try {
+      return promiseResult;
+    } catch(e) {
+      console.log(e);
+    }
   } catch(e) {
     console.log(e);
   }

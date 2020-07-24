@@ -4,3 +4,5 @@ node_modules
 google-credentials-heroku.json
 tmp/*
 !tmp/README.md
+pgdata
+pgadmin

@@ -1,6 +1,6 @@
 const slackServices = require('../services/slack');
 const {refreshAcronyms} = require('./acronym');
-const {refreshNotetakers} = require('./schedule/notetakers');
+const {scheduleNotetakers} = require('./schedule/notetakers');
 const slack = require('../services/slack');
 
 const refreshableThings = ['acronyms', 'notetakers'];
@@ -19,7 +19,7 @@ const refresh = (payload, what) => {
         });
         break;
       case 'notetakers':
-        refreshNotetakers(payload);
+        scheduleNotetakers(payload);
         break;
       default:
         break;
