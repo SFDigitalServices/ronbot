@@ -1,4 +1,4 @@
-ronbot
+`ronbot` (in no particular order)
 - is a slackbot that does things
 - is a node/express app
 - uses circleci to deploy to heroku
