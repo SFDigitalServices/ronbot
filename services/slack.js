@@ -93,7 +93,10 @@ const getUserByName = async (username) => {
   if(Object.keys(users.list).length == 0) await getUsers(users);
   try {
     for(let key in users.list) {
-      if(users.list[key].profile.display_name === username) {
+      username = username.trim();
+      let realNameNormalized = users.list[key].profile.real_name_normalized;
+      let displayNameNormalized = users.list[key].profile.display_name_normalized;
+      if(username === realNameNormalized || username === displayNameNormalized) {
         return users.list[key];
       }
     }

@@ -45,17 +45,26 @@ const scheduleItems = async (sheetId, range) => {
       if(!isNaN(scheduledTime)) {
         let slackUser = await slackServices.getUserByName(slackHandle);
         try {
-          let scheduleMessageResponse = await slackServices.scheduleMessage({
-            channel: slackChannel,
-            post_at: scheduledTime,
-            text: '<@' + slackUser.id + '> ' + message
-          });
-          try {
-            scheduleMessageResponse.recipient = slackHandle;
-            scheduleMessageResponse.datetime = date + ' ' + time;
-            scheduledMessages.push(scheduleMessageResponse);
-          } catch(err) {
-            console.log(err);
+          if(slackUser) {
+            let scheduleMessageResponse = await slackServices.scheduleMessage({
+              channel: slackChannel,
+              post_at: scheduledTime,
+              text: '<@' + slackUser.id + '> ' + message
+            });
+            try {
+              scheduleMessageResponse.recipient = slackHandle;
+              scheduleMessageResponse.datetime = date + ' ' + time;
+              scheduledMessages.push(scheduleMessageResponse);
+            } catch(err) {
+              console.log(err);
+            }
+          } else {
+            scheduledMessages.push({
+              ok: false,
+              error: 'internal:could not find user', 
+              recipient: slackHandle, 
+              datetime: date + ' ' + time
+            });
           }
         } catch(e) {
           console.log(e);
