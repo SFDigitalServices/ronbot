@@ -25,18 +25,6 @@ async function triggerPipeline(projectSlug, branch, parameters) {
   }
 }
 
-async function triggerSfgovDatabaseFiles() {
-  let response = await triggerPipeline('github/SFDigitalServices/ci-jobs', 'sfgov', {
-    'content_sandbox_db_files_update': true
-  });
-  try {
-    return response;
-  } catch(err) {
-    console.log(error);
-    return false;
-  }
-}
-
 async function getPipelineById(pipelineId) {
   let response = await axios.get('https://circleci.com/api/v2/pipeline/' + pipelineId + '/workflow', { headers });
   try {
@@ -76,7 +64,7 @@ async function checkPipelineStatus(pipelineId) {
 }
 
 module.exports = {
-  triggerSfgovDatabaseFiles,
+  triggerPipeline,
   checkPipelineStatus,
   pollForPipelineStatus
 }

@@ -19,6 +19,16 @@ function pipeLineStatus(pipelineId, userId, statusChannel, message) {
   });
 }
 
+async function triggerSfgovPipeline(parameters) {
+  let response = await circleci.triggerPipeline('github/SFDigitalServices/ci-jobs', 'sfgov', parameters);
+  try {
+    return response;
+  } catch(err) {
+    console.log(error);
+    return false;
+  }
+}
+
 router.post('/', (req, res) => {
   let payload = JSON.parse(req.body.payload);
   res.sendStatus(200);
@@ -29,22 +39,43 @@ router.post('/', (req, res) => {
   if(interactiveResponse.indexOf('sfgov_content_') >= 0) {
     switch (interactiveResponse) {
       case 'sfgov_content_sync_db_files':
-        circleci.triggerSfgovDatabaseFiles().then((response) => {
-          let pipelineId = response.data.id;
+        triggerSfgovPipeline({ 'content_sandbox_db_files_update': true }).then((response) => {
           if(response.status === 201) { // created
             axios.post(payload.response_url, {
               replace_original: true,
-              text: 'Syncing database and files from live down to the content sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
+              text: '*Syncing database and files* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
             });
-            pipeLineStatus(pipelineId, userId, statusChannel, 'database and file sync from live down to <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> complete');
+            pipeLineStatus(response.data.id, userId, statusChannel, '*database and file sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
           }
-        })
+        }).catch((err) => {
+          console.log(err);
+        });
         break;
       case 'sfgov_content_sync_code':
-        console.log('sync code');
+        triggerSfgovPipeline({ 'content_sandbox_code_update': true }).then((response) => {
+          if(response.status === 201) { // created
+            axios.post(payload.response_url, {
+              replace_original: true,
+              text: '*Syncing code* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
+            });
+            pipeLineStatus(response.data.id, userId, statusChannel, '*code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
         break;
       case 'sfgov_content_sync_everything':
-        console.log('sync everything');
+        triggerSfgovPipeline({ 'content_sandbox_db_files_code_update': true }).then((response) => {
+          if(response.status === 201) { // created
+            axios.post(payload.response_url, {
+              replace_original: true,
+              text: '*Syncing database, files, and code* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
+            });
+            pipeLineStatus(response.data.id, userId, statusChannel, '*database, files, and code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
         break;
       case 'sfgov_content_cancel':
       default:
