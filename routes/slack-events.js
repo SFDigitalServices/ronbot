@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
-const slackServices = require('../services/slack');
+const slack = require('../services/slack');
 
 // commands
 const { getQuote } = require('../commands/quote');
@@ -46,7 +45,7 @@ router.post('/', (req, res, next) => {
             getHelp(payload);
             break;
           default:
-            slackServices.postMessage(payload, '`' + command + '` ? Try `@ronbot help`');
+            slack.postMessage(payload, '`' + command + '` ? Try `@ronbot help`');
             break;
         }
       }
