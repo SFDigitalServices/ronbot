@@ -45,7 +45,7 @@ router.post('/', (req, res, next) => {
             getHelp(payload);
             break;
           default:
-            slack.postMessage(payload, '`' + command + '` ? Try `@ronbot help`');
+            slack.postMessage(payload, (command ? '`' + command + '` ' : 'Yes') + '? Try `@ronbot help`');
             break;
         }
       }

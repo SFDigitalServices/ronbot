@@ -23,7 +23,7 @@ function confirmDialog(title, text) {
 
 const sfgovContentSandbox = (payload, directMessageToBot) => {
   if(!directMessageToBot) { // not a direct message, respond in thread and direct message user
-    slack.postMessage(payload, 'Let\'s chat.  I\'ll send you a direct message.');
+    slack.postMessage(payload, '<@' + payload.event.user + '>, let\'s chat.  I\'ll send you a direct message.');
   }
   slack.postMessageAdvanced({
     "channel": payload.event.user, // direct message user
