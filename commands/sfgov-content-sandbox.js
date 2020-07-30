@@ -44,7 +44,7 @@ const sfgovContentSandbox = (payload, directMessageToBot) => {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Sync database and files*:  Overwrite the `content` sandbox with the content from `live`.  All changes in the `content` sandbox will be gone."
+          "text": "*Sync database and files*:  Sync database and files from `live` to `content`.  All changes in the `content` sandbox will be gone."
         },
         "accessory": {
           "type": "button",
