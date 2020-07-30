@@ -1,6 +1,7 @@
 const moment = require('moment-timezone');
 const slackServices = require('./slack');
 const googleSheets = require('./google-sheets');
+const airtable = require('./airtable');
 const db = require('./db.js');
 
 const loadItems = async (sheetId, range) => {
@@ -67,13 +68,23 @@ const scheduleItems = async (sheetId, range) => {
             });
           }
         } catch(e) {
-          console.log(e);
+          scheduledMessages.push({
+            ok: false,
+            error: 'something',
+            recipient: slackHandle,
+            datetime: date + ' ' + time
+          });
+          console.error(e);
         }
       }
     }
     // insert the scheduled messages list into the db, update if it already exists
-    db.query("INSERT INTO scheduled_items (sheet_id, messages_json) VALUES ($1, $2)" + 
-      "ON CONFLICT (sheet_id) DO UPDATE SET messages_json = $2", [sheetId, JSON.stringify(scheduledMessages)]);
+    // db.query("INSERT INTO scheduled_items (sheet_id, messages_json) VALUES ($1, $2)" + 
+    //   "ON CONFLICT (sheet_id) DO UPDATE SET messages_json = $2", [sheetId, JSON.stringify(scheduledMessages)]);
+    airtable.upsert('scheduled_items', {
+      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + sheetId + '")',
+      sort: [{field: 'date_modified', direction: 'desc'}]
+    }, {sheet_id: sheetId, messages_json: JSON.stringify(scheduledMessages) });
     return scheduledMessages;
   } catch(e) {
     console.log('could not schedule items');
@@ -82,9 +93,14 @@ const scheduleItems = async (sheetId, range) => {
 };
 
 const deleteScheduledMessages = async (sheetId) => {
-  const result = await db.query("SELECT messages_json FROM scheduled_items WHERE sheet_id=$1", [sheetId]);
+  // const result = await db.query("SELECT messages_json FROM scheduled_items WHERE sheet_id=$1", [sheetId]);
+  // const scheduledMessages = result.rows.length > 0 ? result.rows[0].messages_json : [];
   try {
-    const scheduledMessages = result.rows.length > 0 ? result.rows[0].messages_json : [];
+    const result = await airtable.getRecords('scheduled_items', {
+      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + sheetId + '")',
+      sort: [{field: 'date_modified', direction: 'desc'}]
+    });
+    const scheduledMessages = result.length > 0 ? JSON.parse(result[0].get('messages_json')) : [];
     let promises = [];
     for(let i=0; i<scheduledMessages.length; i++) {
       let message = scheduledMessages[i];
