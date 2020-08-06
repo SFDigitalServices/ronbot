@@ -36,9 +36,11 @@ router.post('/', (req, res, next) => {
             getAcronym(payload, args[0]);
             break;
           case 'schedule':
+            slack.postMessage(payload, 'One moment while I schedule ' + args[0]);
             schedule(payload, args[0]);
             break;
           case 'refresh':
+            slack.postMessage(payload, 'One moment while I refresh ' + args[0]);
             refresh(payload, args[0]);
             break;
           case 'help':
