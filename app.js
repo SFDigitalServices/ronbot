@@ -29,21 +29,27 @@ app.get('/test', async (req, res) => {
   let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list'); //, { channel: generalChannelId });
   
   const messages = response.scheduled_messages;
-  console.log(messages);
+  // console.log(messages);
   console.log(messages.length);
 
-  // try {
-  //   for(let i=0; i<messages.length; i++) {
-  //     let message = messages[i];
-  //     let deleteResponse = await slack.deleteScheduledMessage({
-  //       scheduled_message_id: message.id,
-  //       channel: message.channel_id
-  //     });
-  //     console.log(deleteResponse);
-  //   }
-  // } catch(e) {
-  //   console.error(e);
-  // }
+  try {
+    for(let i=0; i<messages.length; i++) {
+      let message = messages[i];
+      // let deleteResponse = await slack.deleteScheduledMessage({
+      //   scheduled_message_id: message.id,
+      //   channel: message.channel_id
+      // });
+      // console.log(deleteResponse);
+      let userId = message.text.match(/\<@(\w+)\>/)[1];
+      let username = (await slack.getUserInfo(userId)).name;
+      message.recipient = { id: userId, name: username };
+
+      // console.log(username.name);
+      console.log(message);
+    }
+  } catch(e) {
+    console.error(e);
+  }
 
   res.send('done');
 })
