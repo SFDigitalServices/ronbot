@@ -26,16 +26,26 @@ app.get('/test', async (req, res) => {
       break;
     }
   }
-  let list = [];
-  let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list', {
-    channel: generalChannelId
-  });
-  // console.log(response);
-  response.scheduled_messages.forEach(item => {
-    delete item['text'];
-    list.push(item);
-  });
-  res.send(JSON.stringify(list));
+  let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list'); //, { channel: generalChannelId });
+  
+  const messages = response.scheduled_messages;
+  console.log(messages);
+  console.log(messages.length);
+
+  // try {
+  //   for(let i=0; i<messages.length; i++) {
+  //     let message = messages[i];
+  //     let deleteResponse = await slack.deleteScheduledMessage({
+  //       scheduled_message_id: message.id,
+  //       channel: message.channel_id
+  //     });
+  //     console.log(deleteResponse);
+  //   }
+  // } catch(e) {
+  //   console.error(e);
+  // }
+
+  res.send('done');
 })
 
 app.use('/slack-events', slackEventsRouter);
