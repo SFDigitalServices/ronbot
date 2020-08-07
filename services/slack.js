@@ -10,6 +10,24 @@ const headers = {
 
 const users = {list:[]};
 
+const postRequest = async (url, postBody, success, error) => {
+  try {
+    let response = await axios.post(url, postBody, { headers });
+    return response.data;
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+const getRequest = async (url) => {
+  try {
+    let response = await axios.get(url, { headers });
+    return response.data;
+  } catch(e) {
+    console.log(e);
+  }
+}
+
 // this method is used when post body needs more granular details
 // for example, when the channel isn't simply the payload channel or attachments need to be sent
 // see /commands/sfgov-content-sandbox and /routes/slack-interactive.js for examples
@@ -109,6 +127,8 @@ const getUserByName = async (username) => {
 if(Object.keys(users.list).length == 0) getUsers(users); // populate user list if empty
 
 module.exports = {
+  getRequest,
+  postRequest,
   postMessage, 
   postMessageAdvanced,
   scheduleMessage, 

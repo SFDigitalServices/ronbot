@@ -6,7 +6,7 @@ const schedule = (payload, what) => {
   if(what) {
     switch(what) {
       case 'notetakers':
-        scheduleNotetakers(payload); // because refresh deletes and schedules
+        scheduleNotetakers(payload);
         break;
       default:
         break;
