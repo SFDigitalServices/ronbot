@@ -19,9 +19,10 @@ router.post('/', (req, res, next) => {
     let directMessageToBot = (payload.event.type === 'message' && payload.event.channel_type === 'im' && !payload.event.bot_id) ? true : false;
     if(payload.event.type === 'app_mention' || directMessageToBot) {
       if(payload.event.text) {
-        let userMessage = payload.event.text.trim().toLowerCase();
+        let userMessage = payload.event.text.trim();
         let commandString = userMessage.trim().split(' ').filter(item => item.length > 0);
         let command = directMessageToBot ? commandString[0] : commandString[1];
+        command = command.toLowerCase();
         let args = directMessageToBot ? commandString.filter((item, index) => index > 0) : commandString.filter((item, index) => index > 1);
         switch(command) {
           case 'quote':
@@ -36,11 +37,9 @@ router.post('/', (req, res, next) => {
             getAcronym(payload, args[0]);
             break;
           case 'schedule':
-            slack.postMessage(payload, 'One moment while I schedule ' + args[0]);
             schedule(payload, args[0]);
             break;
           case 'refresh':
-            slack.postMessage(payload, 'One moment while I refresh ' + args[0]);
             refresh(payload, args[0]);
             break;
           case 'help':
