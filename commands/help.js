@@ -9,7 +9,7 @@ const text = '' +
     '>`quote` - be prepared to receive wisdom\n' + 
     '>`help` - this menu\n\n' + 
     '<https://docs.google.com/spreadsheets/d/13fcfWufGFEIVvca-1hP7mchVg9q6n7LOvdxYDBTdQiw|acronyms>\n' + 
-    '<https://docs.google.com/spreadsheets/d/1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c|schedule messages example>\n';
+    '<https://docs.google.com/spreadsheets/d/1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c/edit#gid=979594215|schedule messages example>\n';
 
 const getHelp = (payload) => slackServices.postMessage(payload, text);
 
