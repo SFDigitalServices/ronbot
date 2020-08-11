@@ -10,12 +10,12 @@
 
 > `sfgov-content-sandbox` (re)create sf.gov content sandbox on pantheon based on production \
 `what's <acronym>` unfurls an acronym \
-`schedule notetakers` schedules reminders for notetakers \
-`refresh <acronyms, notetakers>` refreshes a thing (just those two actually) \
+`schedule <sheet_id|sheet_range>` schedules messages based on info in google sheet \
+`refresh <acronyms>` refreshes a thing (just that one actually) \
 `quote` - be prepared to receive wisdom \
 `help` - this menu \
 [acronyms](https://docs.google.com/spreadsheets/d/13fcfWufGFEIVvca-1hP7mchVg9q6n7LOvdxYDBTdQiw/edit#gid=0) \
-[notetakers](https://docs.google.com/spreadsheets/d/1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c/edit#gid=979594215)
+[schedule messages example](https://docs.google.com/spreadsheets/d/1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c/edit#gid=979594215)
 
 # Local development
 
