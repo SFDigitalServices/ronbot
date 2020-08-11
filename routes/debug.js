@@ -9,12 +9,7 @@ router.get('/', (req, res) => {
 router.get('/scheduled-messages', async (req, res) => {
   let channelList = (await slack.getRequest('https://slack.com/api/conversations.list')).channels;
   let channels = {};
-  let generalChannelId = '';
   for(var i=0; i<channelList.length; i++) {
-    // if(channelList[i].name == 'general') {
-    //   generalChannelId = channelList[i].id;
-    //   break;
-    // }
     channels[channelList[i].id] = { name: channelList[i].name, scheduled_messages_count: 0, scheduled_messages: [] };
   }
 
