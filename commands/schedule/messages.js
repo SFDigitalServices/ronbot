@@ -15,7 +15,8 @@ const scheduleMessages = async (payload, sheetInfo) => {
   scheduledMessages = await scheduleService.scheduleItems(sheetInfo.id, sheetInfo.range);
 
   try {
-    let outputMessage = '```';
+    let outputMessage = 'Done.' + "\n";
+    outputMessage += '```';
     outputMessage += success + ' = success, ' + fail + ' = fail' + "\n";
     scheduledMessages.forEach(item => {
       if(item.ok) {
@@ -31,8 +32,10 @@ const scheduleMessages = async (payload, sheetInfo) => {
     outputMessage += '```';
     outputMessage += 'success: ' + successCount + "\n";
     outputMessage += 'fail: ' + failCount;
-    outputMessage += '```' + "\n";
-    outputMessage += "Failures usually happen because the date and/or time is in the past or too far in the future.";
+    outputMessage += '```';
+    if(failCount > 0) {
+      outputMessage += "\nFailures usually happen because the date and/or time is in the past or too far in the future.";
+    }
 
     slackServices.postMessage(payload, outputMessage);
   } catch(e) {
