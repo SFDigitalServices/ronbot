@@ -1,0 +1,47 @@
+html
+  head
+    title= "test results"
+    link(rel="stylesheet", href="/css/styles.css", type="text/css")
+    meta(name="description", content="test result screenshots")
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:image" content="http://graphics8.nytimes.com/images/2012/02/19/us/19whitney-span/19whitney-span-articleLarge.jpg")
+    meta(name="twitter:title" content="test result screenshots")
+  body
+      - var environment = data.environment
+      h1 screenshots for #{environment}
+      ul.results
+        each record in data.records
+          - var environment = record.fields.environment;
+          - var testName = record.fields.test_name;
+          - var screenshot = record.fields.screenshot;
+          - var screenshotCompareBaseline = record.fields.screenshot_compare_baseline ? record.fields.screenshot_compare_baseline : null;
+          - var screenshotCompare = record.fields.screenshot_compare ? record.fields.screenshot_compare : null;
+          - var testResult = record.fields.test_result;
+          - var screenshotResult = record.fields.screenshot_result;
+          - var screenshotDiff = record.fields.screenshot_diff;
+
+          li(class=testResult=="true"?"green":undefined class=screenshotResult=="false"?"yellow":undefined class=testResult=="false"?"red":undefined)
+            h2
+              strong.label test name:
+              span.value=testName
+            p.info
+              strong.label passing:
+              span.value=testResult
+            p.info
+              strong.label screenshot passing:
+              span.value=screenshotResult
+            p.info
+              strong.label screenshot diff:
+              span.value=screenshotDiff
+            ul.screenshots
+              li
+                if screenshot
+                  div
+                    img(src=screenshot)
+                if screenshotCompareBaseline
+                  div
+                    img(src=screenshotCompareBaseline)
+                if screenshotCompare
+                  div
+                    img(src=screenshotCompare)
+            
