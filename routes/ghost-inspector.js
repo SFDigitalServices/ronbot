@@ -38,13 +38,6 @@ router.post('/webhook', (req, res, next) => {
   text += '*screenshot passing*: `' + screenshotComparePassing + "`\n";
   text += '*screenshot diff*: ' + (screenshotCompareDifference*100) + "%\n";
   text += 'Screenshot comparison: <https://0f450d3d2a84.ngrok.io/ghost-inspector/test-results/' + resultId + '/>';
-  
-  slack.postMessageAdvanced({
-    channel: 'ant-test',
-    // blocks: blocksArray
-    text: text,
-    unfurl_links: true
-  });
 
   airtable.createRecords('ghost_inspector', [{
       fields: {
@@ -71,7 +64,6 @@ router.get('/suite-results/:suiteResultId', (req, res) => {
     filterByFormula: '({suite_result}="' + suiteResultId + '")',
     sort: [{field: 'test_name', direction: 'asc'}]
   }).then((result) => {
-    console.log(result);
     if(result && result.length > 0) {
       res.render('suite-results', { 
         data: {
@@ -93,7 +85,6 @@ router.get('/test-results/:resultId', (req, res) => {
   const url = 'https://api.ghostinspector.com/v1/results/' + resultId + '/?apiKey=' + config.GHOST_INSPECTOR_API_KEY;
   axios.get(url).then((result) => {
     const data = result.data.data;
-    console.log(result.data);
     const screenshot = data.screenshot.original;
     const screenshotCompareBaselineResult = data.screenshotCompareBaselineResult.screenshot ? data.screenshotCompareBaselineResult.screenshot.original : null;
     const screenshotCompare = data.screenshotCompare ? data.screenshotCompare.compareOriginal : null;
@@ -109,7 +100,6 @@ router.get('/test-results/:resultId', (req, res) => {
     if(screenshotCompare) {
       screenshots.push(screenshotCompare);
     }
-    console.log(screenshots);
     res.render('test-results', { screenshots: screenshots });
   });
 
