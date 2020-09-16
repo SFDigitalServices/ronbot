@@ -62,6 +62,15 @@ router.post('/pantheon-status', (req, res, next) => {
   });
 });
 
+router.post('/circleci-status', (req, res, next) => {
+  let payload = req.body;
+  res.sendStatus(200);
+  slack.postMessageAdvanced({
+    channel: '#ant-test',
+    text: 'circleci status change: ' + JSON.stringify(payload)
+  });
+});
+
 router.get('/', (req, res, next) => {
   res.send('webhooks hi');
 })
