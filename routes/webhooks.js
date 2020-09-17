@@ -5,6 +5,12 @@ const slack = require('../services/slack');
 const airtable = require('../services/airtable');
 const config = require('../config');
 
+const statusColors = {
+  red: "#c13737",
+  green: "#229922",
+  yellow: "#ffc40d"
+}
+
 router.post('/ghost-inspector', (req, res, next) => {
   let payload = req.body;
   res.sendStatus(200);
@@ -58,16 +64,36 @@ router.post('/pantheon-status', (req, res, next) => {
   res.sendStatus(200);
   slack.postMessageAdvanced({
     channel: '#ant-test',
-    text: 'pantheon status change: ' + JSON.stringify(payload)
+    text: 'pantheon status change: \n' + '```' + JSON.stringify(payload) + '```'
   });
 });
 
 router.post('/circleci-status', (req, res, next) => {
   let payload = req.body;
+  console.log(payload);
   res.sendStatus(200);
+  let status_indicator = payload.page.status_indicator;
+  let status_description = payload.page.status_description;
+  let component = payload.component;
+  let color = statusColors.green;
+
+  switch(status_indicator) {
+    case "minor":
+      color = statusColors.yellow;
+      break;
+    default:
+      break;
+  }
+
   slack.postMessageAdvanced({
     channel: '#ant-test',
-    text: 'circleci status change: ' + JSON.stringify(payload)
+    attachments: [
+      {
+        fallback: 'circleci status change \n' + status_indicator + '\n' + status_description + '\n' + component.name,
+        color: color,
+        text: ':circleci: circleci status change \n' + status_description + '\n' + component.name + '\n' + '```' + JSON.stringify(payload) + '```'
+      }
+    ]
   });
 });
 
