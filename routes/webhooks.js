@@ -90,6 +90,7 @@ function processStatusPage(payload, channel, emoji) {
   let component = payload.component;
   let incident = payload.incident;
   let color = statusColors.green;
+  let statusEmoji = null;
 
   switch(status_indicator) {
     case "minor":
@@ -97,6 +98,7 @@ function processStatusPage(payload, channel, emoji) {
       break;
     case "major":
       color = statusColors.red;
+      statusEmoji = ':ahhhhhhhhh:';
       break;
     case "none":
       color = statusColors.green;
@@ -114,6 +116,9 @@ function processStatusPage(payload, channel, emoji) {
     message += '*incident*: ' + incident.name + '\n\n';
     message += '*status*: `' + incident.status + '`\n\n';
     message += '*description*: ' + incident.incident_updates[0].body + '\n\n';
+  }
+  if(statusEmoji) {
+    message += statusEmoji + '\n\n';
   }
 
   slack.postMessageAdvanced({
