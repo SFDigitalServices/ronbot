@@ -65,6 +65,12 @@ router.post('/pantheon-status', (req, res, next) => {
   processStatusPage(payload, '#ops-general', ':pantheon2:');
 });
 
+router.post('/circleci-status', (req, res, next) => {
+  let payload = req.body;
+  res.sendStatus(200);
+  processStatusPage(payload, '#ops-general', ':circleci:');
+});
+
 router.post('/github-status', (req, res, next) => {
   let payload = req.body;
   res.sendStatus(200);
@@ -73,13 +79,6 @@ router.post('/github-status', (req, res, next) => {
     text: 'github status change: \n' + '```' + JSON.stringify(payload) + '```'
   });
 })
-
-router.post('/circleci-status', (req, res, next) => {
-  let payload = req.body;
-  console.log(payload);
-  res.sendStatus(200);
-  processStatusPage(payload, '#ops-general', ':circleci:');
-});
 
 router.get('/', (req, res, next) => {
   res.send('webhooks hi');
