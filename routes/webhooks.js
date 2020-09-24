@@ -81,9 +81,20 @@ router.post('/circleci-status', (req, res, next) => {
     case "minor":
       color = statusColors.yellow;
       break;
+    case "major":
+      color = statusColors.red;
+      break;
+    case "none":
+      color = statusColors.green;
     default:
       break;
   }
+
+  let message = ':circleci: ' + status_description + '\n\n';
+  message += '*component*: ' + component.name + '\n\n';
+  message += '*status*: `' + component.status + '`\n\n';
+  message += '*description*: ' + component.description + '\n\n';
+  message += '```' + JSON.stringify(payload) + '```';
 
   slack.postMessageAdvanced({
     channel: '#ant-test',
@@ -91,7 +102,7 @@ router.post('/circleci-status', (req, res, next) => {
       {
         fallback: 'circleci status change \n' + status_indicator + '\n' + status_description + '\n' + component.name,
         color: color,
-        text: ':circleci: circleci status change \n' + status_description + '\n' + component.name + '\n' + '```' + JSON.stringify(payload) + '```'
+        text: message
       }
     ]
   });
