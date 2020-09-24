@@ -62,10 +62,13 @@ router.post('/ghost-inspector', (req, res, next) => {
 router.post('/pantheon-status', (req, res, next) => {
   let payload = req.body;
   res.sendStatus(200);
-  slack.postMessageAdvanced({
-    channel: '#ant-test',
-    text: 'pantheon status change: \n' + '```' + JSON.stringify(payload) + '```'
-  });
+  processStatusPage(payload, '#ops-general', ':pantheon2:');
+});
+
+router.post('/circleci-status', (req, res, next) => {
+  let payload = req.body;
+  res.sendStatus(200);
+  processStatusPage(payload, '#ops-general', ':circleci:');
 });
 
 router.post('/github-status', (req, res, next) => {
@@ -77,14 +80,17 @@ router.post('/github-status', (req, res, next) => {
   });
 })
 
-router.post('/circleci-status', (req, res, next) => {
-  let payload = req.body;
-  console.log(payload);
-  res.sendStatus(200);
+router.get('/', (req, res, next) => {
+  res.send('webhooks hi');
+});
+
+function processStatusPage(payload, channel, emoji) {
   let status_indicator = payload.page.status_indicator;
   let status_description = payload.page.status_description;
   let component = payload.component;
+  let incident = payload.incident;
   let color = statusColors.green;
+  let statusEmoji = null;
 
   switch(status_indicator) {
     case "minor":
@@ -92,6 +98,7 @@ router.post('/circleci-status', (req, res, next) => {
       break;
     case "major":
       color = statusColors.red;
+      statusEmoji = ':ahhhhhhhhh:';
       break;
     case "none":
       color = statusColors.green;
@@ -99,26 +106,42 @@ router.post('/circleci-status', (req, res, next) => {
       break;
   }
 
-  let message = ':circleci: ' + status_description + '\n\n';
-  message += '*component*: ' + component.name + '\n\n';
-  message += '*status*: `' + component.status + '`\n\n';
-  message += '*description*: ' + component.description + '\n\n';
-  message += '```' + JSON.stringify(payload) + '```';
+  let message = emoji + ' ' + status_description + '\n\n';
+  if(component) {
+    message += '*component*: ' + component.name + '\n\n';
+    message += '*status*: `' + component.status + '`\n\n';
+    message += '*description*: ' + component.description + '\n\n';
+  }
+  if(incident) {
+    message += '*incident*: ' + incident.name + '\n\n';
+    message += '*status*: `' + incident.status + '`\n\n';
+    message += '*description*: ' + incident.incident_updates[0].body + '\n\n';
+  }
+  if(statusEmoji) {
+    message += statusEmoji + '\n\n';
+  }
 
   slack.postMessageAdvanced({
-    channel: '#ant-test',
+    channel: channel,
     attachments: [
       {
-        fallback: 'circleci status change \n' + status_indicator + '\n' + status_description + '\n' + component.name,
+        fallback: emoji + ' status change \n' + status_indicator + '\n' + status_description,
         color: color,
         text: message
       }
     ]
   });
-});
 
-router.get('/', (req, res, next) => {
-  res.send('webhooks hi');
-})
+  slack.postMessageAdvanced({
+    channel: '#ant-test',
+    attachments: [
+      {
+        fallback: emoji + ' status change \n' + status_indicator + '\n' + status_description,
+        color: color,
+        text: message + '```' + JSON.stringify(payload) + '```'
+      }
+    ]
+  });
+}
 
 module.exports = router;
