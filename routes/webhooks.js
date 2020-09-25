@@ -107,21 +107,21 @@ function processStatusPage(payload, channel, emoji) {
       break;
   }
 
-  let message = emoji + ' ' + status_description + '\n\n';
+  let message = emoji + ' ' + status_description + '\n';
 
   if(component) {
-    message += '*component*: ' + component.name + '\n\n';
-    message += '*status*: `' + component.status + '` ' + statusEmoji + '\n\n';
-    message += '*description*: ' + component.description + '\n\n';
+    message += '*component*: ' + component.name + '\n';
+    message += '*status*: `' + component.status + '` ' + statusEmoji + '\n';
+    message += '*description*: ' + component.description + '\n';
   }
 
   if(incident) {
-    message += '*incident*: ' + incident.name + '\n\n';
-    message += '*status*: `' + incident.status + '` ' + statusEmoji + '\n\n';
-    message += '*description*: ' + incident.incident_updates[0].body + '\n\n';
+    message += '*incident*: ' + incident.name + '\n';
+    message += '*status*: `' + incident.status + '` ' + statusEmoji + '\n';
+    message += '*description*: ' + incident.incident_updates[0].body + '\n';
   }
 
-  message += url + '\n\n';
+  message += url + '\n';
 
   if(process.env.NODE_ENV === 'production') {
     slack.postMessageAdvanced({
