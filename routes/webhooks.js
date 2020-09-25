@@ -90,7 +90,8 @@ function processStatusPage(payload, channel, emoji) {
   let component = payload.component;
   let incident = payload.incident;
   let color = statusColors.green;
-  let statusEmoji = null;
+  let statusEmoji = '';
+  let url = payload.meta.unsubscribe.substring(0, payload.meta.unsubscribe.indexOf('?'));
 
   switch(status_indicator) {
     case "minor":
@@ -107,30 +108,33 @@ function processStatusPage(payload, channel, emoji) {
   }
 
   let message = emoji + ' ' + status_description + '\n\n';
+
   if(component) {
     message += '*component*: ' + component.name + '\n\n';
-    message += '*status*: `' + component.status + '`\n\n';
+    message += '*status*: `' + component.status + '` ' + statusEmoji + '\n\n';
     message += '*description*: ' + component.description + '\n\n';
   }
+
   if(incident) {
     message += '*incident*: ' + incident.name + '\n\n';
-    message += '*status*: `' + incident.status + '`\n\n';
+    message += '*status*: `' + incident.status + '` ' + statusEmoji + '\n\n';
     message += '*description*: ' + incident.incident_updates[0].body + '\n\n';
   }
-  if(statusEmoji) {
-    message += statusEmoji + '\n\n';
-  }
 
-  slack.postMessageAdvanced({
-    channel: channel,
-    attachments: [
-      {
-        fallback: emoji + ' status change \n' + status_indicator + '\n' + status_description,
-        color: color,
-        text: message
-      }
-    ]
-  });
+  message += url + '\n\n';
+
+  if(process.env.NODE_ENV === 'production') {
+    slack.postMessageAdvanced({
+      channel: channel,
+      attachments: [
+        {
+          fallback: emoji + ' status change \n' + status_indicator + '\n' + status_description,
+          color: color,
+          text: message
+        }
+      ]
+    });
+  }
 
   slack.postMessageAdvanced({
     channel: '#ant-test',
