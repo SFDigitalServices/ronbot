@@ -14,6 +14,7 @@ router.get('/scheduled-messages', async (req, res) => {
   }
 
   let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list'); //, { channel: generalChannelId });
+  console.log(response);
   const messages = response.scheduled_messages;
 
   try {
@@ -46,21 +47,27 @@ router.get('/scheduled-messages/delete/:channelId', async (req, res) => {
   let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list', { channel: channelId });
   const messages = response.scheduled_messages;
   let deleteCount = 0;
+  let responseMessage = 'done\n';
   try {
-    for(let i=0; i<messages.length; i++) {
-      let message = messages[i];
-      let deleteResponse = await slack.deleteScheduledMessage({
-        scheduled_message_id: message.id,
-        channel: message.channel_id
-      });
-      if(deleteResponse.ok) {
-        deleteCount++;
+    if(response.ok) {
+      for(let i=0; i<messages.length; i++) {
+        let message = messages[i];
+        let deleteResponse = await slack.deleteScheduledMessage({
+          scheduled_message_id: message.id,
+          channel: message.channel_id
+        });
+        if(deleteResponse.ok) {
+          deleteCount++;
+          responseMessage = 'deleted: ' + deleteCount;
+        }
       }
+    } else {
+      responseMessage = 'broke: ' + response.error;
     }
     res.header("Content-Type",'application/json');
-    res.send('deleted: ' + deleteCount);
+    res.send(responseMessage);
   } catch(e) {
-    res.send('broke');
+    res.send('broke: ' + e);
     console.error(e);
   }
 });

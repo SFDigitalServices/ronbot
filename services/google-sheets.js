@@ -11,7 +11,7 @@ const getSheet = async (sheetId, range) => {
   const sheets = google.sheets({version: 'v4', auth});
   const request = {
     spreadsheetId: sheetId,
-    range: range
+    range: '\'' + range + '\''
   };
   try {
     let response = (await sheets.spreadsheets.values.get(request)).data;

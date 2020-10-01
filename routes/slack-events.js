@@ -22,8 +22,10 @@ router.post('/', (req, res, next) => {
         let userMessage = payload.event.text.trim();
         let commandString = userMessage.trim().split(' ').filter(item => item.length > 0);
         let command = directMessageToBot ? commandString[0] : commandString[1];
-        command = command.toLowerCase();
+        command = command.toLowerCase().trim();
         let args = directMessageToBot ? commandString.filter((item, index) => index > 0) : commandString.filter((item, index) => index > 1);
+        // rejoin arguments
+        args = [args.join(' ')];
         switch(command) {
           case 'quote':
             getQuote(payload);
