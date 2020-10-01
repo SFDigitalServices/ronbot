@@ -14,6 +14,7 @@ const loadItems = async (sheetId, range) => {
 };
 
 const scheduleItems = async (sheetId, range) => {
+  let airtableSheetIdRange = sheetId + '|' + range;
   let items = await loadItems(sheetId, range);
   let itemsJson = [];
   let scheduledMessages = [];
@@ -82,9 +83,9 @@ const scheduleItems = async (sheetId, range) => {
     // db.query("INSERT INTO scheduled_items (sheet_id, messages_json) VALUES ($1, $2)" + 
     //   "ON CONFLICT (sheet_id) DO UPDATE SET messages_json = $2", [sheetId, JSON.stringify(scheduledMessages)]);
     airtable.upsert('scheduled_items', {
-      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + sheetId + '")',
+      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + airtableSheetIdRange + '")',
       sort: [{field: 'date_modified', direction: 'desc'}]
-    }, {sheet_id: sheetId, messages_json: JSON.stringify(scheduledMessages) });
+    }, {sheet_id: airtableSheetIdRange, messages_json: JSON.stringify(scheduledMessages) });
     return scheduledMessages;
   } catch(e) {
     console.log('could not schedule items');
@@ -92,12 +93,13 @@ const scheduleItems = async (sheetId, range) => {
   }
 };
 
-const deleteScheduledMessages = async (sheetId) => {
+const deleteScheduledMessages = async (sheetId, range) => {
   // const result = await db.query("SELECT messages_json FROM scheduled_items WHERE sheet_id=$1", [sheetId]);
   // const scheduledMessages = result.rows.length > 0 ? result.rows[0].messages_json : [];
+  let airtableSheetIdRange = sheetId + '|' + range;
   try {
     const result = await airtable.getRecords('scheduled_items', {
-      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + sheetId + '")',
+      filterByFormula: 'AND(NOT({sheet_id} = ""), {sheet_id}="' + airtableSheetIdRange + '")',
       sort: [{field: 'date_modified', direction: 'desc'}]
     });
     const scheduledMessages = result.length > 0 ? JSON.parse(result[0].get('messages_json')) : [];

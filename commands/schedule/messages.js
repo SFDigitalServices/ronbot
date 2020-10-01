@@ -9,7 +9,7 @@ const scheduleMessages = async (payload, sheetInfo) => {
   let failCount = 0;
 
   // delete previous scheduled messages to avoid duplicate messaging
-  await scheduleService.deleteScheduledMessages(sheetInfo.id);
+  await scheduleService.deleteScheduledMessages(sheetInfo.id, sheetInfo.range);
 
   // scheduled messages will also contain messages that could not be scheduled
   scheduledMessages = await scheduleService.scheduleItems(sheetInfo.id, sheetInfo.range);
