@@ -11,6 +11,7 @@ router.get('/suite-results/:suiteResultId', (req, res) => {
     if(result && result.length > 0) {
       res.render('suite-results', { 
         data: {
+          suiteResultId: suiteResultId,
           environment: result[0].fields.environment,
           records: result
         }
