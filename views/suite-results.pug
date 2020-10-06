@@ -1,7 +1,7 @@
 - var environment = data.environment
 html
   head
-    title= "suite results for " + environment
+    title="suite results for " + environment
     link(rel="stylesheet", href="/css/styles.css", type="text/css")
     meta(name="description", content="a summary of test results for " + environment)
     meta(name="twitter:card" content="summary_large_image")
@@ -10,6 +10,8 @@ html
   body
     h1 suite results for 
       a(href=environment target="_blank") #{environment}
+    p.info
+      a.top-level-link(href="https://app.ghostinspector.com/suite-results/" + data.suiteResultId target="_blank") Ghost inspector suite results dashboard
     ul.results
       each record in data.records
         - var environment = record.fields.environment;
@@ -31,15 +33,18 @@ html
             span.value=screenshotResult
           p.info
             strong.label screenshot diff:
-            span.value=screenshotDiff
+            span.value=((screenshotDiff*100).toPrecision(3))+'%'
           ul.screenshots
             li
               if screenshot
                 div
+                  p="this test screenshot"
                   img(src=screenshot)
               if screenshotCompareBaseline
                 div
+                  p="baseline screenshot"
                   img(src=screenshotCompareBaseline)
               if screenshotCompare
                 div
+                  p="screenshot diff"
                   img(src=screenshotCompare)
