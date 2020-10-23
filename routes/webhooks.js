@@ -78,7 +78,16 @@ router.post('/github-status', (req, res, next) => {
     channel: '#ant-test',
     text: 'github status change: \n' + '```' + JSON.stringify(payload) + '```'
   });
-})
+});
+
+router.post('/sendgrid-status', (req, res, next) => {
+  let payload = req.body;
+  res.sendStatus(200);
+  slack.postMessageAdvanced({
+    channel: '#ant-test',
+    text: 'sendgrid status change: \n' + '```' + JSON.stringify(payload) + '```'
+  });
+});
 
 router.get('/', (req, res, next) => {
   res.send('webhooks hi');
