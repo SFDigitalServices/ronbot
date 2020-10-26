@@ -8,7 +8,8 @@ const config = require('../config');
 const statusColors = {
   red: "#c13737",
   green: "#229922",
-  yellow: "#ffc40d"
+  yellow: "#ffc40d",
+  blue: "#097ab6"
 }
 
 router.post('/ghost-inspector', (req, res, next) => {
@@ -83,10 +84,7 @@ router.post('/github-status', (req, res, next) => {
 router.post('/sendgrid-status', (req, res, next) => {
   let payload = req.body;
   res.sendStatus(200);
-  slack.postMessageAdvanced({
-    channel: '#ant-test',
-    text: 'sendgrid status change: \n' + '```' + JSON.stringify(payload) + '```'
-  });
+  processStatusPage(payload, '#ops-general', ':sendgrid:');
 });
 
 router.get('/', (req, res, next) => {
@@ -103,6 +101,9 @@ function processStatusPage(payload, channel, emoji) {
   let url = payload.meta.unsubscribe.substring(0, payload.meta.unsubscribe.indexOf('?'));
 
   switch(status_indicator) {
+    case "maintenance":
+      color = statusColors.blue;
+      break;
     case "minor":
       color = statusColors.yellow;
       break;
