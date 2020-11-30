@@ -91,6 +91,26 @@ router.get('/', (req, res, next) => {
   res.send('webhooks hi');
 });
 
+// send a slack notification for pr review requested
+router.post('/github/pull-request', (req, res, next) => {
+  let payload = req.body;
+  res.sendStatus(200);
+  if(payload.action === "review_requested") {
+    const pr = payload.pull_request.url;
+    const prTitle = payload.pull_request.title;
+    const requester = payload.pull_request.user.login;
+    const reviewers = payload.pull_request.requested_reviewers.map(obj => obj.login);
+    slack.postMessageAdvanced({
+      channel: '#ant-test',
+      text: 'pr review requested\n' +
+        '> *url*: ' + pr + '\n' +
+        '> *title*: ' + prTitle + '\n' + 
+        '> *requester*: ' + requester + '\n' + 
+        '> *reviewers*: ' + reviewers.toString() + '\n'
+    });
+  }
+});
+
 function processStatusPage(payload, channel, emoji) {
   let status_indicator = payload.page.status_indicator;
   let status_description = payload.page.status_description;
