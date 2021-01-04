@@ -51,9 +51,35 @@ ul {
   background: #f5e9e5;
 }
 
+.results h2 {
+  display: inline-block;
+}
+
 .results > li {
   padding: 20px;
   border-bottom: 1px solid #ccc;
+}
+
+.results > li > .status-box {
+  display: none;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+.results > li.pass > .status-box {
+  display: inline-block;
+  background: green;
+}
+
+.results > li.screenshot-fail > .status-box {
+  display: inline-block;
+  background: gold;
+}
+
+.results > li.fail > .status-box {
+  display: inline-block;
+  background: red;
 }
 
 .screenshots li > div {
@@ -80,4 +106,17 @@ ul {
 .top-level-link {
   display: block;
   padding: 0 0 20px 20px;
+}
+
+details {
+  padding: 0 0 10px 15px;
+}
+
+details details {
+  padding: 10px 0 0 15px;
+}
+
+.offending-node {
+  padding: 10px 0 0 15px;
+  font-family: 'Courier New', Courier, monospace;
 }
