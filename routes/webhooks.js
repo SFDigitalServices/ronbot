@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const slack = require('../services/slack');
 const airtable = require('../services/airtable');
+const accessibility = require('./webhooks/accessibility');
 const config = require('../config');
 
 const statusColors = {
@@ -11,6 +12,8 @@ const statusColors = {
   yellow: "#ffc40d",
   blue: "#097ab6"
 }
+
+router.post('/accessibility', accessibility);
 
 router.post('/ghost-inspector', (req, res, next) => {
   let payload = req.body;

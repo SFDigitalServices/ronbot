@@ -22,29 +22,41 @@ html
         - var testResult = record.fields.test_result;
         - var screenshotResult = record.fields.screenshot_result;
         - var screenshotDiff = record.fields.screenshot_diff;
+        - var a11yScanResult = record.fields.a11y_scan_result;
 
-        li(class=testResult=="true"?"green":undefined class=screenshotResult=="false"?"yellow":undefined class=testResult=="false"?"red":undefined)
-          h2=testName
-          p.info
-            strong.label passing:
-            span.value=testResult
-          p.info
-            strong.label screenshot passing:
-            span.value=screenshotResult
-          p.info
-            strong.label screenshot diff:
-            span.value=((screenshotDiff*100).toPrecision(3))+'%'
-          ul.screenshots
-            li
-              if screenshot
-                div
-                  p="this test screenshot"
-                  img(src=screenshot)
-              if screenshotCompareBaseline
-                div
-                  p="baseline screenshot"
-                  img(src=screenshotCompareBaseline)
-              if screenshotCompare
-                div
-                  p="screenshot diff"
-                  img(src=screenshotCompare)
+        li(class=testResult=="true"?"pass":undefined class=screenshotResult=="false"?"screenshot-fail":undefined class=testResult=="false"?"fail":undefined)
+          div(class="status-box")
+          h2 #{testName} (#{testResult==="true" ? "passing" : "failing" })
+          details
+            summary Screenshots 
+              if screenshotResult === "true"
+                span passing
+              else
+                span failing, diff: #{((screenshotDiff*100).toPrecision(3))+'%'}
+            ul.screenshots
+              li
+                if screenshot
+                  div
+                    p="this test screenshot"
+                    img(src=screenshot)
+                if screenshotCompareBaseline
+                  div
+                    p="baseline screenshot"
+                    img(src=screenshotCompareBaseline)
+                if screenshotCompare
+                  div
+                    p="screenshot diff"
+                    img(src=screenshotCompare)
+          if a11yScanResult
+            - a11yScanResult = JSON.parse(a11yScanResult)
+            details
+              summary Accessibility 
+                if a11yScanResult.length > 0
+                  span (#{a11yScanResult.length} violations)
+              each scanResult in a11yScanResult
+                details(open)
+                  summary=scanResult.description
+                  each node in scanResult.nodes
+                    div(class="offending-node")
+                      div=node.html
+
