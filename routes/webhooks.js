@@ -94,6 +94,12 @@ router.post('/', (req, res, next) => {
   try {
     let payload = req.body;
     res.status(200).send('Webhook hit with payload:\n' + JSON.stringify(payload) + '\n');
+    airtable.createRecords('webhooks', [{
+        fields: {
+          "payload": JSON.stringify(payload)
+        }
+      }
+    ]);
   } catch(e) {
     res.status(500).send('Error');
   }
