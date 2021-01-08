@@ -34,16 +34,6 @@ router.post('/ghost-inspector', (req, res, next) => {
   const screenshotCompareBaselineResult = payload.data.screenshotCompareBaselineResult.screenshot ? payload.data.screenshotCompareBaselineResult.screenshot.original.defaultUrl : null;
   const screenshotCompare = payload.data.screenshotCompare ? payload.data.screenshotCompare.compareOriginal.defaultUrl : null;
 
-  let text = ':ghost:' + "\n";
-  text += '*suite*: ' + suiteName + "\n";
-  text += '*test*: ' + testName + "\n";
-  text += '*environment*:' + environment + "\n";
-  text += '*video*: ' + videoUrl + "\n";
-  text += '*passing*: `' + testResult + "`\n";
-  text += '*screenshot passing*: `' + screenshotComparePassing + "`\n";
-  text += '*screenshot diff*: ' + (screenshotCompareDifference*100) + "%\n";
-  text += 'Screenshot comparison: <https://0f450d3d2a84.ngrok.io/ghost-inspector/test-results/' + resultId + '/>';
-
   airtable.createRecords('ghost_inspector', [{
       fields: {
         "result_id": resultId,
@@ -96,7 +86,8 @@ router.post('/', (req, res, next) => {
     res.status(200).send('Webhook hit with payload:\n' + JSON.stringify(payload) + '\n');
     airtable.createRecords('webhooks', [{
         fields: {
-          "payload": JSON.stringify(payload)
+          "payload": JSON.stringify(payload),
+          "user_agent": req.headers['user-agent']
         }
       }
     ]);
