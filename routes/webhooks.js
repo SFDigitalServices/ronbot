@@ -90,8 +90,17 @@ router.post('/sendgrid-status', (req, res, next) => {
   processStatusPage(payload, '#ops-general', ':sendgrid:');
 });
 
+router.post('/', (req, res, next) => {
+  try {
+    let payload = req.body;
+    res.status(200).send('Webhook hit with payload:\n' + JSON.stringify(payload) + '\n');
+  } catch(e) {
+    res.status(500).send('Error');
+  }
+});
+
 router.get('/', (req, res, next) => {
-  res.send('webhooks hi');
+  res.send('webhooks.  hi.');
 });
 
 function processStatusPage(payload, channel, emoji) {
