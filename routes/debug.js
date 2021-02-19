@@ -14,7 +14,6 @@ router.get('/scheduled-messages', async (req, res) => {
   }
 
   let response = await slack.postRequest('https://slack.com/api/chat.scheduledMessages.list'); //, { channel: generalChannelId });
-  console.log(response);
   const messages = response.scheduled_messages;
 
   try {
@@ -23,7 +22,9 @@ router.get('/scheduled-messages', async (req, res) => {
       let userId = message.text.match(/\<@(\w+)\>/)[1];
       let username = (await slack.getUserInfo(userId)).name;
       message.recipient = { id: userId, name: username };
-      channels[message.channel_id].scheduled_messages.push(message);
+      if(channels[message.channel_id]) {
+        channels[message.channel_id].scheduled_messages.push(message);
+      }
     }
     for (const key in channels) {
       if (channels.hasOwnProperty(key)) {
