@@ -19,9 +19,10 @@ const postRequest = async (url, postBody, success, error) => {
   }
 }
 
-const getRequest = async (url) => {
+const getRequest = async (url, queryParams = null) => {
   try {
-    let response = await axios.get(url, { headers });
+    let params = queryParams ? '?' + Object.entries(queryParams).map(e => e.join('=')).join('&') : ''
+    let response = await axios.get(url + params, { headers });
     return response.data;
   } catch(e) {
     console.log(e);
@@ -135,5 +136,6 @@ module.exports = {
   deleteScheduledMessage,
   getUserByName,
   getUserInfo,
-  getUsers: async () => { await getUsers(users) }
+  getUsers: async () => { await getUsers(users) },
+  users
 }

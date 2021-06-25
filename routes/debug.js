@@ -73,4 +73,29 @@ router.get('/scheduled-messages/delete/:channelId', async (req, res) => {
   }
 });
 
+router.get('/:channelId/users', async(req, res) => {
+  const channelId = req.params.channelId ? req.params.channelId : null;
+  let response = await slack.getRequest('https://slack.com/api/conversations.members', {channel: channelId})
+  const convoMembers = response.members
+  const convoMembersFull = []
+  let nameList = []
+  for(let i = 0; i<convoMembers.length; i++) {
+    let memberId = convoMembers[i]
+    let user = slack.users.list[memberId]
+    if(user && !user.is_bot) {
+      convoMembersFull.push(user)
+      nameList.push(user.real_name)
+    }
+  }
+
+  nameList.sort((a,b) => {
+    return a.localeCompare(b, 'en', {'sensitivity':'base'})
+  })
+
+  res.header("Content-Type",'application/json');
+  res.send(convoMembersFull.length + '\n\n' +
+    'list:\n' + JSON.stringify(nameList, null, 4) + '\n\n' +
+    'full object:\n' + JSON.stringify(convoMembersFull, null, 4))
+})
+
 module.exports = router;
