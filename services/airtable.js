@@ -1,6 +1,5 @@
 const config = require('../config.js');
 const Airtable = require('airtable');
-const { param } = require('../routes/slack-events.js');
 
 const base = new Airtable({apiKey: config.AIRTABLE_TOKEN}).base(config.AIRTABLE_BASE);
 
