@@ -1,6 +1,9 @@
 {
   "name": "sfds-slackbot-jobs",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "",
   "main": "app.js",
   "dependencies": {
@@ -8,7 +11,6 @@
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "canvas": "^2.6.1",
-    "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "googleapis": "^52.1.0",
     "merge-images": "^2.0.0",
@@ -17,6 +19,7 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
+    "dotenv": "^8.6.0",
     "nodemon": "^2.0.4"
   },
   "scripts": {
