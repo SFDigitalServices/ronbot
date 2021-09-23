@@ -62,6 +62,19 @@ const postMessage = async (payload, text, successCallback, errorCallback) => {
   }
 }
 
+const addReaction = async(payload, emoji) => {
+  console.log(payload);
+  const response = await axios.post('https://slack.com/api/reactions.add', {
+    token: SLACKBOT_TOKEN,
+    channel: payload.event.channel,
+    name: emoji,
+    timestamp: payload.event.ts
+  }, {
+    headers
+  });
+  console.log(response);
+}
+
 const scheduleMessage = async (postBody, successCallback, errorCallback) => {
   postBody.token = SLACKBOT_TOKEN;
   let response = await axios.post('https://slack.com/api/chat.scheduleMessage', postBody, { headers });
@@ -133,6 +146,7 @@ module.exports = {
   postRequest,
   postMessage, 
   postMessageAdvanced,
+  addReaction,
   scheduleMessage, 
   deleteScheduledMessage,
   getUserByName,
