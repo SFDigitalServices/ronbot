@@ -23,11 +23,13 @@ html
         - var testResult = record.fields.test_result;
         - var screenshotResult = record.fields.screenshot_result;
         - var screenshotDiff = record.fields.screenshot_diff;
-        - var a11yScanResult = record.fields.a11y_scan_result;
+        - var url = record.fields.url;
 
         li(class=testResult=="true"?"pass":undefined class=screenshotResult=="false"?"screenshot-fail":undefined class=testResult=="false"?"fail":undefined class=index%2===0?"even":"odd")
           div(class="status-box")
           h2 #{testName} (#{testResult==="true" ? "passing" : "failing" })
+          p.url
+            a(href=url) #{url}
           details
             summary Screenshots 
               if screenshotResult === "true"
