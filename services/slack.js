@@ -50,7 +50,8 @@ const postMessage = async (payload, text, successCallback, errorCallback) => {
     token: SLACKBOT_TOKEN,
     channel: payload.event.channel,
     thread_ts: thread_ts,
-    text: text
+    text: text,
+    unfurl_links: false
   }, {
     headers
   });

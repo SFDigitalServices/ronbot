@@ -60,6 +60,10 @@ ul {
   border-bottom: 1px solid #ccc;
 }
 
+.results > li:nth-of-type(2n+1) {
+  background: #f7f7f7;
+}
+
 .results > li > .status-box {
   display: none;
   width: 15px;
@@ -82,12 +86,31 @@ ul {
   background: red;
 }
 
+.screenshots li {
+  padding: 0 0 0 20px;
+  margin: 20px 0 0 0;
+}
+
 .screenshots li > div {
   padding: 0;
   margin: 0;
   display: inline-block;
   vertical-align: top;
   width: 33%;
+  border-style: solid;
+  border-width: 1px 0 1px 1px;
+}
+
+.screenshots li > div:last-of-type {
+  border-right: 1px solid;
+}
+
+.screenshots li > div > p {
+  padding: 10px;
+  margin: 0;
+  border-bottom: 1px solid;
+  background: #aaa;
+  font-weight: bold;
 }
 
 .screenshots img {
@@ -120,3 +143,5 @@ details details {
   padding: 10px 0 0 15px;
   font-family: 'Courier New', Courier, monospace;
 }
+
+

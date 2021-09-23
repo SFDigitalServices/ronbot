@@ -24,15 +24,16 @@ router.post('/ghost-inspector', (req, res, next) => {
   const suiteName = payload.data.suite.name;
   const testId = payload.data.test._id;
   const testName = payload.data.name;
+  const url = payload.data.urls[payload.data.urls.length-1];
   const testResult = payload.data.passing;
   const environment = payload.data.startUrl;
   const suiteResult = payload.data.suiteResult; // this is an id
   const videoUrl = payload.data.video.url;
   const screenshotComparePassing = payload.data.screenshotComparePassing;
   const screenshotCompareDifference = payload.data.screenshotCompareDifference;
-  const screenshot = payload.data.screenshot.original.defaultUrl;
-  const screenshotCompareBaselineResult = payload.data.screenshotCompareBaselineResult.screenshot ? payload.data.screenshotCompareBaselineResult.screenshot.original.defaultUrl : null;
-  const screenshotCompare = payload.data.screenshotCompare ? payload.data.screenshotCompare.compareOriginal.defaultUrl : null;
+  const screenshot = payload.data.screenshot.original?.defaultUrl;
+  const screenshotCompareBaselineResult = payload.data.screenshotCompareBaselineResult.screenshot ? payload.data.screenshotCompareBaselineResult.screenshot.original?.defaultUrl : null;
+  const screenshotCompare = payload.data.screenshotCompare ? payload.data.screenshotCompare.compareOriginal?.defaultUrl : null;
 
   airtable.createRecords('ghost_inspector', [{
       fields: {
@@ -40,6 +41,7 @@ router.post('/ghost-inspector', (req, res, next) => {
         "suite_id": suiteId,
         "test_id": testId,
         "test_name": testName,
+        "url": url,
         "suite_result": suiteResult,
         "environment": environment,
         "screenshot": screenshot,

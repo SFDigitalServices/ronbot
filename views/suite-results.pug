@@ -12,8 +12,9 @@ html
       a(href=environment target="_blank") #{environment}
     p.info
       a.top-level-link(href="https://app.ghostinspector.com/suite-results/" + data.suiteResultId target="_blank") Ghost inspector suite results dashboard
+      a.top-level-link(href="javascript:void(0)" onclick="toggleDetails(event)" data-open="false") Toggle open/close all
     ul.results
-      each record in data.records
+      each record, index in data.records
         - var environment = record.fields.environment;
         - var testName = record.fields.test_name;
         - var screenshot = record.fields.screenshot;
@@ -24,7 +25,7 @@ html
         - var screenshotDiff = record.fields.screenshot_diff;
         - var a11yScanResult = record.fields.a11y_scan_result;
 
-        li(class=testResult=="true"?"pass":undefined class=screenshotResult=="false"?"screenshot-fail":undefined class=testResult=="false"?"fail":undefined)
+        li(class=testResult=="true"?"pass":undefined class=screenshotResult=="false"?"screenshot-fail":undefined class=testResult=="false"?"fail":undefined class=index%2===0?"even":"odd")
           div(class="status-box")
           h2 #{testName} (#{testResult==="true" ? "passing" : "failing" })
           details
@@ -59,4 +60,17 @@ html
                   each node in scanResult.nodes
                     div(class="offending-node")
                       div=node.html
-
+    script.
+      var allOpen = false;
+      function toggleDetails(e) {
+        var open = e.target.getAttribute('data-open') === 'false' ? false : true;
+        e.target.setAttribute('data-open', !open)
+        var details = document.querySelectorAll('details')
+        for(var i=0; i<details.length; i++) {
+          if(open) {
+            details[i].removeAttribute('open')
+          } else {
+            details[i].setAttribute('open', true)
+          }
+        }
+      }

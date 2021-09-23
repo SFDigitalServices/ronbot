@@ -9,6 +9,7 @@ const { getAcronym } = require('../commands/acronym');
 const { sfgovContentSandbox } = require('../commands/sfgov-content-sandbox');
 const { schedule } = require('../commands/schedule');
 const { refresh } = require('../commands/refresh');
+const { sfgovScreenshotsSuite } = require('../commands/sfgov-screenshots-suite');
 
 router.post('/', (req, res, next) => {
   if(req.body.challenge) {
@@ -32,6 +33,9 @@ router.post('/', (req, res, next) => {
             break;
           case 'sfgov-content-sandbox':
             sfgovContentSandbox(payload, directMessageToBot);
+            break;
+          case 'sfgov-screenshots-suite':
+            sfgovScreenshotsSuite(payload, args[0]);
             break;
           case 'acronym':
           case 'whatis':
