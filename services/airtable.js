@@ -1,7 +1,12 @@
 const config = require('../config.js');
 const Airtable = require('airtable');
 
-const base = new Airtable({apiKey: config.AIRTABLE_TOKEN}).base(config.AIRTABLE_BASE);
+let base
+try {
+  base = new Airtable({apiKey: config.AIRTABLE_TOKEN}).base(config.AIRTABLE_BASE);
+} catch (error) {
+  console.error('[airtable] unable to connect:', error.message)
+}
 
 const headers = {
   'Content-Type': 'application/json',
