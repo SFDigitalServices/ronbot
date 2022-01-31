@@ -89,6 +89,8 @@ CIRCLECI_API_TOKEN=abcdefg12345678 # get this info from https://circleci.com/acc
 PORT={port number from nrgok above}
 GOOGLE_CONFIG= # google config json string (notes below)
 GOOGLE_APPLICATION_CREDENTIALS=./google-credentials-heroku.json
+AIRTABLE_BASE=""
+AIRTABLE_TOKEN=""
 ACRONYMS_SHEET={"id":"13fcfWufGFEIVvca-1hP7mchVg9q6n7LOvdxYDBTdQiw","range":"Sheet1"}
 NOTETAKERS_SHEET={"id":"1InM7iZlUqNy3L_oiB6CfskISQAx1W24v05R0sLrfI1c","range":"ronbot"}
 DATABASE_DEV_URL=postgres://user:pass@postgres:5432/db
@@ -125,7 +127,7 @@ If these urls aren't reverted and you shut off your computer, ronbot will be unr
 
 ## Read some docs
 
-Slack api documentation: https://api.slack.com/#read\_the\_docs
+Slack api documentation: https://api.slack.com/#read_the_docs
 
 Docker docs: https://docs.docker.com/
 
