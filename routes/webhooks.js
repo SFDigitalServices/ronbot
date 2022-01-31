@@ -1,17 +1,14 @@
 const express = require('express');
-const router = express.Router();
 const axios = require('axios');
-const slack = require('../services/slack');
 const airtable = require('../services/airtable');
 const accessibility = require('./webhooks/accessibility');
+const github = require('./webhooks/github');
 const config = require('../config');
+const slack = require('../services/slack');
 
-const statusColors = {
-  red: "#c13737",
-  green: "#229922",
-  yellow: "#ffc40d",
-  blue: "#097ab6"
-}
+const router = express.Router();
+
+router.post('/github', github);
 
 router.post('/accessibility', accessibility);
 
@@ -103,6 +100,13 @@ router.get('/', (req, res, next) => {
 });
 
 function processStatusPage(payload, channel, emoji) {
+  const statusColors = {
+    red: "#c13737",
+    green: "#229922",
+    yellow: "#ffc40d",
+    blue: "#097ab6"
+  }
+    
   let status_indicator = payload.page.status_indicator;
   let status_description = payload.page.status_description;
   let component = payload.component;
