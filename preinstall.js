@@ -1,3 +1,10 @@
-if(process.env.NODE_ENV === 'undefined' || process.env.NODE_ENV !== 'production') require('dotenv').config();
-const fs = require('fs');
-fs.writeFile(process.env.GOOGLE_APPLICATION_CREDENTIALS, process.env.GOOGLE_CONFIG, (err) => {});
+const fs = require('fs')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
+const { GOOGLE_APPLICATION_CREDENTIALS, GOOGLE_CONFIG } = process.env
+if (GOOGLE_APPLICATION_CREDENTIALS && GOOGLE_CONFIG) {
+  fs.writeFileSync(GOOGLE_APPLICATION_CREDENTIALS, GOOGLE_CONFIG)
+}
