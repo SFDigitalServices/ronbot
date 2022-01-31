@@ -12,6 +12,7 @@
     "axios": "^0.24.0",
     "body-parser": "^1.19.0",
     "canvas": "^2.8.0",
+    "dedent": "^0.7.0",
     "express": "^4.17.1",
     "googleapis": "^52.1.0",
     "merge-images": "^2.0.0",
