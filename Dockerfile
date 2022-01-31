@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:14
 
 # these args are populated via docker-compose.yml, which gets the values from the .env file via the env_file key
 # they are needed for preinstall.js in order to create the google creds for the sheets api

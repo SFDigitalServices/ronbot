@@ -7,16 +7,18 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "airtable": "^0.8.1",
-    "axios": "^0.19.0",
+    "@amplitude/node": "^1.9.1",
+    "airtable": "^0.11.1",
+    "axios": "^0.24.0",
     "body-parser": "^1.19.0",
-    "canvas": "^2.6.1",
+    "canvas": "^2.8.0",
+    "dedent": "^0.7.0",
     "express": "^4.17.1",
     "googleapis": "^52.1.0",
     "merge-images": "^2.0.0",
     "moment-timezone": "^0.5.31",
     "pg": "^8.3.0",
-    "pug": "^3.0.0"
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "dotenv": "^8.6.0",
@@ -25,7 +27,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "preinstall": "node preinstall.js",
+    "postinstall": "node preinstall.js",
     "start.dev": "echo \"start.dev\" && nodemon -L"
   },
   "author": "",
