@@ -12,6 +12,8 @@ const ghostinspectorRouter = require('./routes/ghost-inspector');
 const webhooksRouter = require('./routes/webhooks');
 const buildsRouter = require('./routes/builds');
 
+const acronyms = require('./commands/acronym')
+
 app.use(bodyParser.json({limit: '50mb'})); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -30,5 +32,7 @@ app.set('view engine', 'pug');
 app.get('/', (req, res) => {
   res.send('hi');
 });
+
+acronyms.load()
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));

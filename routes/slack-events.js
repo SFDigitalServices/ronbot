@@ -40,7 +40,7 @@ router.post('/', (req, res, next) => {
               break;
             case 'acronym':
             case 'whatis':
-            case "what’s":
+            case "what's":
               getAcronym(payload, args[0]);
               break;
             case 'schedule':
