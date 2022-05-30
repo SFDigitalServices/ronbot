@@ -3,7 +3,7 @@ const slackServices = require('../services/slack');
 const text = '' + 
     '`@ronbot [command]`\n' + 
     '>`sfgov-content-sandbox` sync options for sf.gov content sandbox on pantheon\n' +
-    '>`what’s <acronym>` unfurls an acronym\n' + 
+    '>`what\'s <acronym>` unfurls an acronym\n' + 
     '>`schedule <sheet_id|sheet_range>` schedules messages based on info in google sheet\n' +
     '>`refresh <acronyms>` refreshes a thing\n' +
     '>`quote` - be prepared to receive wisdom\n' + 

@@ -57,6 +57,8 @@ const getAcronym = (payload, acronym) => {
   }
 };
 
-loadAcronyms(acronyms);
+const load = () => {
+  loadAcronyms(acronyms);
+}
 
-module.exports = { getAcronym, refreshAcronyms }
+module.exports = { load, getAcronym, refreshAcronyms }
