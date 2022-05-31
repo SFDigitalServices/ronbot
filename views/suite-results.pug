@@ -9,71 +9,51 @@ html
     meta(name="twitter:title" content="test results for " + environment)
     meta(name="viewport" content="width=device-width, initial-scale=1")
   body
-    h1 suite results for 
-      a(href=environment target="_blank") #{environment}
-    p.info
-      a.top-level-link(href="https://app.ghostinspector.com/suite-results/" + data.suiteResultId target="_blank") Ghost inspector suite results dashboard
-      a.top-level-link(href="javascript:void(0)" onclick="toggleDetails(event)" data-open="false") Toggle open/close all
-    ul.results
-      each record, index in data.records
-        - var environment = record.fields.environment;
-        - var testName = record.fields.test_name;
-        - var screenshot = record.fields.screenshot;
-        - var screenshotCompareBaseline = record.fields.screenshot_compare_baseline ? record.fields.screenshot_compare_baseline : null;
-        - var screenshotCompare = record.fields.screenshot_compare ? record.fields.screenshot_compare : null;
-        - var testResult = record.fields.test_result;
-        - var screenshotResult = record.fields.screenshot_result;
-        - var screenshotDiff = record.fields.screenshot_diff;
-        - var url = record.fields.url;
+  if Object.keys(data.results.data).length == 0
+    p no results
+  else
+    - var suiteResultsDashboard = "https://app.ghostinspector.com/suite-results/" + data.results.meta.suiteResultId
 
-        li(class=testResult=="true"?"pass":undefined class=screenshotResult=="false"?"screenshot-fail":undefined class=testResult=="false"?"fail":undefined class=index%2===0?"even":"odd")
-          div(class="status-box")
-          h2 #{testName} (#{testResult==="true" ? "passing" : "failing" })
-          p.url
-            a(href=url) #{url}
-          details
-            summary Screenshots 
-              if screenshotResult === "true"
-                span passing
-              else
-                span failing, diff: #{((screenshotDiff*100).toPrecision(3))+'%'}
-            ul.screenshots
-              li
-                if screenshot
-                  div
-                    p="this test screenshot"
-                    img(src=screenshot)
-                if screenshotCompareBaseline
-                  div
-                    p="baseline screenshot"
-                    img(src=screenshotCompareBaseline)
+    header
+      h1 suite results
+      ul
+        li
+          strong suite results dashboard: 
+          a(href=suiteResultsDashboard target="_blank") #{suiteResultsDashboard}
+        li
+          strong env: 
+          a(href=data.results.meta.startUrl target="_blank") #{data.results.meta.startUrl}
+    div.container
+      div.navigation
+        ul
+          if Object.keys(data.testList.failing).length > 0
+            li.failing
+              p screenshot failing:
+              ul
+                each test, key in data.testList.failing
+                  li
+                    a(href="#"+test._id) #{test.name}
+          if Object.keys(data.testList.passing).length > 0
+            li.passing
+              p screenshot passing:
+              ul
+                each test, key in data.testList.passing
+                  li
+                    a(href="#"+test._id) #{test.name}
+      div.results
+        ul
+          each test in data.results.data
+            - var testName = test.name
+            - var testResult = test.passing
+            - var screenshotCompareResult = test.screenshotComparePassing
+            - var screenshot = test.screenshot ? test.screenshot.original.defaultUrl : null
+            - var screenshotCompare = test.screenshotCompare ? test.screenshotCompare.compareOriginal.defaultUrl : null
+
+            li
+              h2
+                a(name=test._id) #{testName}
+              //- div #{screenshotCompareResult}
+              div(class=test.isMobile==true?"is-mobile":"")
+                img(src=screenshot)
                 if screenshotCompare
-                  div
-                    p="screenshot diff"
-                    img(src=screenshotCompare)
-          if a11yScanResult
-            - a11yScanResult = JSON.parse(a11yScanResult)
-            details
-              summary Accessibility 
-                if a11yScanResult.length > 0
-                  span (#{a11yScanResult.length} violations)
-              each scanResult in a11yScanResult
-                details(open)
-                  summary=scanResult.description
-                  each node in scanResult.nodes
-                    div(class="offending-node")
-                      div=node.html
-    script.
-      var allOpen = false;
-      function toggleDetails(e) {
-        var open = e.target.getAttribute('data-open') === 'false' ? false : true;
-        e.target.setAttribute('data-open', !open)
-        var details = document.querySelectorAll('details')
-        for(var i=0; i<details.length; i++) {
-          if(open) {
-            details[i].removeAttribute('open')
-          } else {
-            details[i].setAttribute('open', true)
-          }
-        }
-      }
+                  img(src=screenshotCompare)

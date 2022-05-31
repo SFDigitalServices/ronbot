@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
               replace_original: true,
               text: '*Syncing database and files* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
             });
-            pipeLineStatus(response.data.id, userId, statusChannel, '*database and file sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
+            pipeLineStatus(response.data.id, userId, statusChannel, '*database and file sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> complete');
           }
         }).catch((err) => {
           console.log(err);
@@ -58,7 +58,7 @@ router.post('/', (req, res) => {
               replace_original: true,
               text: '*Syncing code* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
             });
-            pipeLineStatus(response.data.id, userId, statusChannel, '*code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
+            pipeLineStatus(response.data.id, userId, statusChannel, '*code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> complete');
           }
         }).catch((err) => {
           console.log(err);
@@ -71,7 +71,7 @@ router.post('/', (req, res) => {
               replace_original: true,
               text: '*Syncing database, files, and code* from `live` down to the `content` sandbox.  This will take a few minutes.  I\'ll let you know when this task is complete.'
             });
-            pipeLineStatus(response.data.id, userId, statusChannel, '*database, files, and code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov `content` sandbox> complete');
+            pipeLineStatus(response.data.id, userId, statusChannel, '*database, files, and code sync* from `live` down to <https://content-sfgov.pantheonsite.io|sf.gov content sandbox> complete');
           }
         }).catch((err) => {
           console.log(err);
