@@ -37,7 +37,10 @@ const sfgovScreenshotsSuite = (payload, args) => {
     const resultId = executeData.data.data._id;
     suiteResult(resultId).then((response) => {
       if(response === true) {
-        slackServices.postMessage(payload, "<@" + payload.event.user + "> suite complete, <https://ronswanbot.herokuapp.com/ghost-inspector/suite-results/" + resultId + "|click this link for results>")
+        slackServices.postMessage(
+          payload,
+           "<@" + payload.event.user + "> suite complete, <https://ronswanbot.herokuapp.com/ghost-inspector/suite-results/" + 
+            config.GHOST_INSPECTOR_SCREENSHOTS_SUITE + "/" + resultId + "|click this link for results>")
       }
     })
   })
