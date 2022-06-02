@@ -6,6 +6,7 @@ const airtable = require('../services/airtable');
 
 router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
   const suiteResultId = req.params.suiteResultId
+
   // get the suite tests (for proper ordering)
   axios.get('https://api.ghostinspector.com/v1/suites/' + req.params.suiteId + '/tests/?apiKey=' + config.GHOST_INSPECTOR_API_KEY).then((suiteTestsResult) => {
     const suiteTests = suiteTestsResult.data.data
@@ -41,8 +42,6 @@ router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
     const suiteTestResults = []
     const baselineResults = {}
 
-    // console.log(results)
-
     for(let i=0; i<numCalls; i++) {
       let params = '&count=' + count + '&offset=' + (count * i)
       let giUrl = 'https://api.ghostinspector.com/v1/suite-results/' + suiteResultId + '/results?apiKey=' + config.GHOST_INSPECTOR_API_KEY + params
@@ -57,19 +56,7 @@ router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
       )
     }
 
-    
-
-    
-
     Promise.all(promises).then(() => {
-      for(let x=0; x<baselineResults.length; x++) {
-        baselinePromises.push(
-          axios.get('https://api.ghostinspector.com/v1/results/' + baselineResults[x].baselineResult   + '/?apiKey=' + config.GHOST_INSPECTOR_API_KEY).then(response => {
-            baselineResults[x].baselineScreenshot = response.data.data.screenshot.original.defaultUrl
-          })
-        )
-      }
-
       for(let key in baselineResults) {
         baselinePromises.push(
           axios.get('https://api.ghostinspector.com/v1/results/' + baselineResults[key].baselineResult   + '/?apiKey=' + config.GHOST_INSPECTOR_API_KEY).then(response => {
@@ -118,8 +105,6 @@ router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
             }
           }
         }
-        
-        console.log(results)
   
         res.render('suite-results', {
           data: {
