@@ -1,4 +1,4 @@
-- var environment = data.environment
+- var environment = data.results.meta.startUrl
 html
   head
     title="suite results for " + environment
@@ -46,14 +46,25 @@ html
             - var testName = test.name
             - var testResult = test.passing
             - var screenshotCompareResult = test.screenshotComparePassing
+            - var baselineScreenshot = test.screenshot.baselineScreenshot
             - var screenshot = test.screenshot ? test.screenshot.original.defaultUrl : null
             - var screenshotCompare = test.screenshotCompare ? test.screenshotCompare.compareOriginal.defaultUrl : null
 
-            li
+            li(class=screenshotCompareResult ? "pass" : "fail")
               h2
-                a(name=test._id) #{testName}
-              //- div #{screenshotCompareResult}
-              div(class=test.isMobile==true?"is-mobile":"")
-                img(src=screenshot)
-                if screenshotCompare
-                  img(src=screenshotCompare)
+                a(name=test._id, href=test.url) #{testName}
+              div(class=test.isMobile ? "is-mobile" : "")
+                table(cellspacing="0", cellpadding="0", border="0")
+                  tr
+                    td
+                      p baseline screenshot
+                      img(src=baselineScreenshot)
+                    td 
+                      p this test screenshot
+                      img(src=screenshot)
+                    td
+                      if screenshotCompare
+                        p compare
+                        img(src=screenshotCompare)
+                      else
+                        img(src=screenshot, style="visibility:hidden")
