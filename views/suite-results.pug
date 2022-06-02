@@ -3,6 +3,7 @@ html
   head
     title="suite results for " + environment
     link(rel="stylesheet", href="/css/styles.css", type="text/css")
+    link(rel="icon" href="/images/favicon.ico")
     meta(name="description", content="a summary of test results for " + environment)
     meta(name="twitter:card" content="summary_large_image")
     meta(name="twitter:image" content="https://ghostinspector.com/assets/images/logo.png")
@@ -52,7 +53,7 @@ html
 
             li(class=screenshotCompareResult ? "pass" : "fail")
               h2
-                a(name=test._id, href=test.url) #{testName}
+                a(name=test._id, href=test.url, target="_blank") #{testName}
               div(class=test.isMobile ? "is-mobile" : "")
                 table(cellspacing="0", cellpadding="0", border="0")
                   tr

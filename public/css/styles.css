@@ -76,10 +76,14 @@ header {
   width: 79%
 }
 
-.results h2 a {
-  display: block;
+.results h2 {
   padding: 16px;
   margin-bottom: 8px;
+}
+
+.results h2 a {
+  padding-right: 24px;
+  background: url(../images/new-tab.png) no-repeat 100% 50%;
 }
 
 .results ul {
