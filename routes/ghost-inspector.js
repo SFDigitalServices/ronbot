@@ -75,6 +75,7 @@ router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
           }
   
           if(testId in results.data) {
+            results.data[testId].url = suiteResult.urls[suiteResult.urls.length-1]
             results.data[testId].passing = suiteResult.passing
             results.data[testId].screenshotCompareDifference = suiteResult.screenshotCompareDifference
             results.data[testId].screenshotComparePassing = suiteResult.screenshotComparePassing

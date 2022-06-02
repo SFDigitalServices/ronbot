@@ -52,7 +52,7 @@ html
 
             li(class=screenshotCompareResult ? "pass" : "fail")
               h2
-                a(name=test._id) #{testName}
+                a(name=test._id, href=test.url) #{testName}
               div(class=test.isMobile ? "is-mobile" : "")
                 table(cellspacing="0", cellpadding="0", border="0")
                   tr
