@@ -24,6 +24,7 @@ app.use('/ghost-inspector', ghostinspectorRouter);
 app.use('/webhooks', webhooksRouter);
 app.use('/builds', buildsRouter);
 
+app.use('/favicon.ico', express.static('images/favicon.ico'));
 app.use(express.static('public'));
 
 app.set('views', './views');
