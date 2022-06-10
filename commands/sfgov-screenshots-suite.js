@@ -31,13 +31,16 @@ const sfgovScreenshotsSuite = (payload, args) => {
 
   slackServices.postMessage(payload, "<@" + payload.event.user + "> I'll run <https://app.ghostinspector.com/suites/" + config.GHOST_INSPECTOR_SCREENSHOTS_SUITE + "|the screenshots suite> against " + (startUrl.length > 0 ? startUrl : "the suite default start url") + " and let you know when it's done")
   
-  // execuite suite
-  https://api.ghostinspector.com/v1/suites/<suite-id>/execute/?apiKey=<api-key>
+  // execute suite
+  // https://api.ghostinspector.com/v1/suites/<suite-id>/execute/?apiKey=<api-key>
   axios.get('https://api.ghostinspector.com/v1/suites/' + config.GHOST_INSPECTOR_SCREENSHOTS_SUITE + '/execute/?apiKey=' + config.GHOST_INSPECTOR_API_KEY + '&immediate=1&startUrl=' + startUrl).then((executeData) => {
     const resultId = executeData.data.data._id;
     suiteResult(resultId).then((response) => {
       if(response === true) {
-        slackServices.postMessage(payload, "<@" + payload.event.user + "> suite complete, <https://ronswanbot.herokuapp.com/ghost-inspector/suite-results/" + resultId + "|click this link for results>")
+        slackServices.postMessage(
+          payload,
+           "<@" + payload.event.user + "> suite complete, <https://ronswanbot.herokuapp.com/ghost-inspector/suite-results/" + 
+            config.GHOST_INSPECTOR_SCREENSHOTS_SUITE + "/" + resultId + "|click this link for results>")
       }
     })
   })

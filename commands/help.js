@@ -1,3 +1,5 @@
+const dedent = require('dedent')
+
 const { ACRONYMS_SHEET } = require('../config')
 const slackServices = require('../services/slack')
 
