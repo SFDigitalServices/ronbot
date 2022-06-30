@@ -130,3 +130,16 @@ header {
 .results td img {
   width: 100%;
 }
+
+.results td .no-baseline {
+  display: block;
+  text-align: center;
+  font-weight: normal;
+}
+
+.results td .no-baseline:after {
+  content: '¯\\_(ツ)_/¯';
+  margin-top: 8px;
+  display: block;
+  font-size: 24px;
+}

@@ -60,7 +60,7 @@ router.get('/suite-results/:suiteId/:suiteResultId', (req, res) => {
       for(let key in baselineResults) {
         baselinePromises.push(
           axios.get('https://api.ghostinspector.com/v1/results/' + baselineResults[key].baselineResult   + '/?apiKey=' + config.GHOST_INSPECTOR_API_KEY).then(response => {
-            baselineResults[key].baselineScreenshot = response.data.data.screenshot.original.defaultUrl
+            baselineResults[key].baselineScreenshot = response.data.data?.screenshot.original.defaultUrl
           })
         )
       }
