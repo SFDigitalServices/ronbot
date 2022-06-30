@@ -59,7 +59,10 @@ html
                   tr
                     td
                       p baseline screenshot
-                      img(src=baselineScreenshot)
+                      if baselineScreenshot == undefined
+                        p(class="no-baseline") no baseline screenshot
+                      else
+                        img(src=baselineScreenshot)
                     td 
                       p this test screenshot
                       img(src=screenshot)
