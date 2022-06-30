@@ -48,7 +48,7 @@ html
             - var testResult = test.passing
             - var screenshotCompareResult = test.screenshotComparePassing
             - var baselineScreenshot = test.screenshot.baselineScreenshot
-            - var screenshot = test.screenshot ? test.screenshot.original.defaultUrl : null
+            - var screenshot = test.screenshot.original ? test.screenshot.original.defaultUrl : null
             - var screenshotCompare = test.screenshotCompare ? test.screenshotCompare.compareOriginal.defaultUrl : null
 
             li(class=screenshotCompareResult ? "pass" : "fail")
@@ -60,12 +60,15 @@ html
                     td
                       p baseline screenshot
                       if baselineScreenshot == undefined
-                        p(class="no-baseline") no baseline screenshot
+                        p(class="no-screenshot") no baseline screenshot
                       else
                         img(src=baselineScreenshot)
                     td 
                       p this test screenshot
-                      img(src=screenshot)
+                      if screenshot == undefined
+                        p(class="no-screenshot") no test screenshot
+                      else
+                        img(src=screenshot)
                     td
                       if screenshotCompare
                         p compare

@@ -125,19 +125,20 @@ header {
 .results td p {
   text-align: center;
   font-weight: bold;
+  padding: 0 8px;
 }
 
 .results td img {
   width: 100%;
 }
 
-.results td .no-baseline {
+.results td .no-screenshot {
   display: block;
   text-align: center;
   font-weight: normal;
 }
 
-.results td .no-baseline:after {
+.results td .no-screenshot:after {
   content: '¯\\_(ツ)_/¯';
   margin-top: 8px;
   display: block;
