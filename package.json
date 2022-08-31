@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "googleapis": "^52.1.0",
     "merge-images": "^2.0.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "pg": "^8.3.0",
     "pug": "^3.0.2"
   },
